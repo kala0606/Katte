@@ -1,0 +1,20 @@
+{
+  "name": "Katte · Srishti",
+  "short_name": "Katte",
+  "description": "Presence without policing — the availability platform for Srishti faculty & staff.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf5ea",
+  "theme_color": "#faf5ea",
+  "lang": "en-IN",
+  "categories": ["productivity", "education"],
+  "icons": [
+    { "src": "icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "maskable" },
+    { "src": "icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" },
+    { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}

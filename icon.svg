@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Katte app icon — cream kolam knot on terracotta, full-bleed for maskable -->
+  <rect width="512" height="512" fill="#c2502c"/>
+  <g fill="none" stroke="#faf5ea" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
+    <!-- four-fold kolam loop: one petal rotated around the centre -->
+    <g id="p"><path d="M256,250 C182,214 182,112 256,112 C330,112 330,214 256,250"/></g>
+    <use href="#p" transform="rotate(90 256 256)"/>
+    <use href="#p" transform="rotate(180 256 256)"/>
+    <use href="#p" transform="rotate(270 256 256)"/>
+    <!-- pulli dots between the loops -->
+    <circle cx="256" cy="256" r="7" fill="#faf5ea" stroke="none"/>
+    <circle cx="150" cy="150" r="6" fill="#e79f1f" stroke="none"/>
+    <circle cx="362" cy="150" r="6" fill="#e79f1f" stroke="none"/>
+    <circle cx="150" cy="362" r="6" fill="#e79f1f" stroke="none"/>
+    <circle cx="362" cy="362" r="6" fill="#e79f1f" stroke="none"/>
+  </g>
+</svg>

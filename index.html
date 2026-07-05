@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Katte · Srishti</title>
+<meta name="description" content="Presence without policing — the availability platform for Srishti faculty & staff.">
+<!-- PWA: installable, offline-capable -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#faf5ea">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Katte">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#faf5ea;
+  --paper-2:#f2ead9;
+  --card:#fffdf7;
+  --ink:#221c14;
+  --ink-soft:#5c5344;
+  --ink-faint:#96897390;
+  --line:#221c1422;
+  --terracotta:#c2502c;
+  --marigold:#e79f1f;
+  --leaf:#3c7a45;
+  --leaf-soft:#3c7a4518;
+  --indigo:#37538f;
+  --indigo-soft:#37538f16;
+  --amber-soft:#e79f1f1f;
+  --grey:#8d8577;
+  --grey-soft:#8d857720;
+  --radius:18px;
+  --display:"Fraunces",serif;
+  --body:"Schibsted Grotesk",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100dvh;
+  font-size:15px;
+  line-height:1.45;
+}
+/* paper grain */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.48 0 0 0 0 0.36 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.shell{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:var(--paper);box-shadow:0 0 60px #221c1410}
+@media(min-width:431px){.shell{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+@media(min-width:900px){.shell{max-width:1080px}}
+
+/* ---------- SIGN IN ---------- */
+#signin{
+  min-height:100dvh;display:flex;flex-direction:column;justify-content:space-between;
+  padding:40px 28px 44px;position:relative;overflow:hidden;
+}
+.hero{position:relative;margin:auto 0} /* centres between top edge and the button */
+.hero .kn{
+  font-size:17px;color:var(--terracotta);font-weight:600;margin-bottom:10px;display:block
+}
+.hero h1{
+  font-family:var(--display);font-weight:560;font-size:64px;line-height:.95;
+  letter-spacing:-.02em;font-variation-settings:"opsz" 144;
+}
+.hero h1 em{font-style:italic;color:var(--terracotta)}
+.hero p.def{
+  margin-top:18px;padding-left:14px;border-left:2px solid var(--marigold);
+  color:var(--ink-soft);font-size:14.5px;max-width:300px;
+}
+.hero p.def b{color:var(--ink)}
+.signin-foot{position:relative}
+.gbtn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
+  background:var(--ink);color:var(--paper);border:none;border-radius:14px;
+  padding:17px 20px;font-family:var(--body);font-size:15.5px;font-weight:600;cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+  box-shadow:0 6px 0 -2px #22201c55;
+}
+.gbtn:active{transform:translateY(3px);box-shadow:0 2px 0 -1px #22201c55}
+.gbtn .g{height:28px;width:auto;flex:none}
+.signin-foot small{display:block;text-align:center;margin-top:14px;color:var(--ink-faint);font-size:12px}
+.signin-foot small b{color:var(--ink-soft)}
+
+/* stagger reveal */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+#signin .hero>*,#signin .signin-foot{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+#signin .hero .kn{animation-delay:.1s}
+#signin .hero h1{animation-delay:.18s}
+#signin .hero p.def{animation-delay:.3s}
+#signin .signin-foot{animation-delay:.45s}
+
+/* ---------- ACCOUNT PICKER SHEET ---------- */
+.sheetwrap{position:fixed;inset:0;z-index:80;display:none}
+.sheetwrap.open{display:block}
+.sheetwrap .scrim{position:absolute;inset:0;background:#221c1470;animation:fadein .25s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes slideup{from{transform:translate(-50%,60px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.sheet{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  background:var(--card);border:1.5px solid var(--ink);border-bottom:none;
+  border-radius:22px 22px 0 0;padding:20px 20px calc(26px + env(safe-area-inset-bottom));
+  animation:slideup .35s cubic-bezier(.2,.7,.2,1) both;
+}
+.sheet .grab{width:40px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 16px}
+.sheet h4{font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:2px}
+.sheet .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px}
+.acct{
+  width:100%;display:flex;align-items:center;gap:12px;text-align:left;
+  background:transparent;border:1.5px solid var(--line);border-radius:14px;
+  padding:11px 13px;margin-bottom:8px;cursor:pointer;font-family:var(--body);
+  transition:all .15s ease;
+}
+.acct:hover,.acct:focus-visible{border-color:var(--ink);background:var(--paper)}
+.acct:active{transform:scale(.985)}
+.acct .aa{
+  width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13.5px;color:#fff;border:2px solid var(--ink);
+}
+.acct .nm{font-weight:700;font-size:14.5px;color:var(--ink)}
+.acct .em{font-size:12px;color:var(--ink-soft)}
+.sheet .or{
+  display:flex;align-items:center;gap:10px;margin:14px 0 10px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+}
+.sheet .or::before,.sheet .or::after{content:"";height:1px;flex:1;background:var(--line)}
+.customrow{display:flex;gap:8px}
+.customrow input{
+  flex:1;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;
+  font-family:var(--body);font-size:14px;background:var(--paper);color:var(--ink);min-width:0;
+}
+.customrow input:focus{outline:none;border-color:var(--terracotta)}
+.customrow button{
+  border:none;background:var(--terracotta);color:#fff;font-family:var(--body);font-weight:700;
+  font-size:14px;border-radius:12px;padding:12px 16px;cursor:pointer;flex:none;
+  box-shadow:0 4px 0 -1px #7c2f17;transition:all .15s;
+}
+.customrow button:active{transform:translateY(2px);box-shadow:0 1px 0 0 #7c2f17}
+.sheet .fine{margin-top:12px;font-size:11px;color:var(--ink-faint);text-align:center}
+
+/* ---------- APP CHROME ---------- */
+#app{display:none;padding-bottom:112px}
+#app.show{display:block}
+header.appbar{
+  padding:20px 22px 12px;display:flex;align-items:flex-start;justify-content:space-between;
+  position:sticky;top:0;background:var(--paper);z-index:20;
+  border-bottom:1px solid #221c1414;box-shadow:0 6px 14px -10px #221c1422;
+}
+.appbar .word{font-family:var(--display);font-size:23px;font-weight:600;letter-spacing:-.01em}
+.appbar .word i{font-style:normal;color:var(--terracotta)}
+.appbar .date{font-size:12px;color:var(--ink-soft);margin-top:1px}
+.avatar{
+  width:40px;height:40px;border-radius:50%;background:var(--terracotta);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
+  border:2px solid var(--ink);flex:none;
+}
+main{padding:6px 22px 12px}
+.view{display:none;animation:rise .4s cubic-bezier(.2,.7,.2,1) both}
+.view.active{display:block}
+/* fixed-position children (composer) must anchor to the viewport, so no animation here */
+#v-channel{animation:none}
+h2.sec{
+  font-family:var(--display);font-size:15px;font-weight:600;font-style:italic;
+  color:var(--ink-soft);margin:26px 0 12px;display:flex;align-items:center;gap:10px;
+}
+h2.sec::after{content:"";height:1px;flex:1;background:var(--line)}
+
+/* ---------- STATUS PICKER ---------- */
+.mystatus{margin-top:8px}
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 14px 12px;
+  background:var(--card);cursor:pointer;position:relative;transition:all .18s ease;
+  min-height:96px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;
+}
+.scard .sig{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink)}
+.scard h3{font-size:14.5px;font-weight:700;line-height:1.2}
+.scard p{font-size:11.5px;color:var(--ink-soft);line-height:1.3}
+.scard[data-s="campus"] .sig{background:var(--leaf)}
+.scard[data-s="online"] .sig{background:var(--indigo)}
+.scard[data-s="studio"] .sig{background:var(--marigold)}
+.scard[data-s="away"] .sig{background:var(--grey)}
+.scard.sel{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
+.scard.sel[data-s="campus"]{background:var(--leaf-soft)}
+.scard.sel[data-s="online"]{background:var(--indigo-soft)}
+.scard.sel[data-s="studio"]{background:var(--amber-soft)}
+.scard.sel[data-s="away"]{background:var(--grey-soft)}
+.statusnote{
+  margin-top:10px;width:100%;border:1.5px dashed var(--line);border-radius:12px;background:transparent;
+  padding:11px 13px;font-family:var(--body);font-size:13.5px;color:var(--ink);
+}
+.statusnote::placeholder{color:var(--ink-faint)}
+.statusnote:focus{outline:none;border-color:var(--terracotta)}
+
+/* office hours strip */
+.oh{
+  margin-top:14px;border-radius:var(--radius);background:var(--ink);color:var(--paper);
+  padding:15px 16px;display:flex;align-items:center;gap:13px;
+}
+.oh .clock{font-family:var(--display);font-size:26px;font-weight:560;font-style:italic;color:var(--marigold);line-height:1;flex:none}
+.oh div p{font-size:13.5px}
+.oh div small{font-size:11.5px;opacity:.65}
+.oh .pill{margin-left:auto;flex:none;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--marigold);color:var(--ink);padding:5px 9px;border-radius:99px}
+
+/* ---------- PEOPLE ---------- */
+.filterrow{display:flex;gap:7px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.filterrow::-webkit-scrollbar{display:none}
+.chip{
+  flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:99px;
+  padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+  font-family:var(--body);transition:all .15s;
+}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pcard{
+  display:flex;gap:13px;align-items:flex-start;background:var(--card);
+  border:1.5px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px;
+  animation:rise .35s cubic-bezier(.2,.7,.2,1) both;
+}
+.pcard .pa{
+  width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:15px;color:#fff;border:2px solid var(--ink);position:relative;
+}
+.pcard .pa .st{
+  position:absolute;right:-3px;bottom:-3px;width:13px;height:13px;border-radius:50%;
+  border:2px solid var(--card);
+}
+.pcard .meta{flex:1;min-width:0}
+.pcard .nm{font-weight:700;font-size:15px}
+.pcard .role{font-size:12px;color:var(--ink-soft)}
+.pcard .now{font-size:12.5px;margin-top:5px}
+.pcard .now .d{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:1px}
+.pcard .backup{
+  font-size:11.5px;color:var(--ink-soft);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);
+}
+.pcard .backup b{color:var(--terracotta)}
+.pcard .act{flex:none;display:flex;flex-direction:column;gap:6px}
+.mini{
+  border:1.5px solid var(--ink);background:transparent;border-radius:10px;padding:7px 10px;
+  font-family:var(--body);font-size:11.5px;font-weight:700;cursor:pointer;color:var(--ink);
+  transition:all .15s;white-space:nowrap;
+}
+.mini:active{background:var(--ink);color:var(--paper)}
+.mini.solid{background:var(--marigold);border-color:var(--ink)}
+
+/* ---------- WORK PIE ---------- */
+.piewrap{display:flex;gap:18px;align-items:center;margin-top:6px}
+.pie{flex:none;width:150px;height:150px;position:relative}
+.pie svg{transform:rotate(-90deg)}
+.pie .mid{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.pie .mid b{font-family:var(--display);font-size:29px;font-weight:600;line-height:1}
+.pie .mid small{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+.legend{flex:1;display:flex;flex-direction:column;gap:8px}
+.legend .li{display:flex;align-items:center;gap:9px;font-size:12.5px}
+.legend .sw{width:11px;height:11px;border-radius:3px;flex:none;border:1px solid #221c1433}
+.legend .li b{margin-left:auto;font-variant-numeric:tabular-nums}
+.eqv{
+  margin-top:16px;background:var(--paper-2);border-radius:14px;padding:13px 15px;font-size:13px;color:var(--ink-soft);
+  border:1.5px solid var(--line);
+}
+.eqv b{color:var(--terracotta)}
+.logform{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:4px}
+.logform label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);display:block;margin:12px 0 6px}
+.logform label:first-child{margin-top:0}
+.catrow{display:flex;flex-wrap:wrap;gap:7px}
+.catrow .chip{padding:8px 12px}
+.hrow{display:flex;gap:9px;align-items:center}
+.hrow input{
+  flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font-family:var(--body);
+  font-size:14px;background:var(--paper);color:var(--ink);
+}
+.hrow input:focus{outline:none;border-color:var(--terracotta)}
+.logbtn{
+  border:none;background:var(--terracotta);color:#fff;font-family:var(--body);font-weight:700;
+  font-size:14px;border-radius:12px;padding:12px 18px;cursor:pointer;flex:none;
+  box-shadow:0 4px 0 -1px #7c2f17;transition:all .15s;
+}
+.logbtn:active{transform:translateY(2px);box-shadow:0 1px 0 0 #7c2f17}
+.ledger .row{
+  display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px dashed var(--line);font-size:13px;
+}
+.ledger .row .sw{width:9px;height:9px;border-radius:3px;flex:none}
+.ledger .row span.what{flex:1}
+.ledger .row small{color:var(--ink-faint)}
+.ledger .row b{font-variant-numeric:tabular-nums}
+
+/* ---------- ME ---------- */
+.mecard{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center}
+.mecard h3{font-family:var(--display);font-size:22px;font-weight:600}
+.mecard p{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+.setrow{
+  display:flex;align-items:center;gap:12px;background:transparent;border:none;
+  border-bottom:1px solid var(--line);border-radius:0;padding:15px 4px;margin-bottom:0;font-size:14px;width:100%;
+  font-family:var(--body);text-align:left;color:var(--ink);
+}
+.setrow .ic{font-size:17px;flex:none}
+.setrow div{flex:1}
+.setrow small{display:block;color:var(--ink-soft);font-size:11.5px}
+.setrow .val{color:var(--terracotta);font-weight:700;font-size:12.5px;flex:none}
+button.setrow{cursor:pointer}
+button.setrow:active{background:var(--paper-2)}
+.editbtn{
+  border:none;background:none;cursor:pointer;color:var(--ink-soft);padding:7px;border-radius:8px;
+  flex:none;display:flex;align-items:center;font-size:15px;transition:all .15s;
+}
+.editbtn:hover,.editbtn:focus-visible{color:var(--ink);background:var(--paper-2)}
+.setedit{
+  border:1.5px solid var(--terracotta);border-radius:8px;padding:6px 10px;font-family:var(--body);
+  font-size:13px;font-weight:600;color:var(--ink);background:var(--card);width:160px;text-align:right;
+}
+.setedit:focus{outline:none}
+.trustnote{
+  margin-top:18px;font-family:var(--display);font-style:italic;font-size:14.5px;color:var(--ink-soft);
+  text-align:center;padding:0 16px;line-height:1.55;
+}
+
+/* ---------- TAB BAR ---------- */
+nav.tabs{
+  position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:398px;
+  background:var(--card);border:1px solid #221c141c;border-radius:16px;
+  display:flex;z-index:40;padding:5px;
+  box-shadow:0 10px 24px -8px #221c1430;
+}
+nav.tabs button{
+  flex:1;background:none;border:none;font-family:var(--body);cursor:pointer;
+  padding:7px 2px 13px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--ink-faint);font-size:9.5px;font-weight:700;letter-spacing:.03em;
+  transition:color .15s;position:relative;
+}
+nav.tabs button .tic{font-size:20px;line-height:1;transition:transform .15s}
+nav.tabs button.on{color:var(--ink)}
+nav.tabs button.on .tic{transform:translateY(-1px)}
+nav.tabs button.on::after{
+  content:"";position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--terracotta);
+}
+
+/* ---------- CHANNELS (ADDA) ---------- */
+.chanrow{
+  width:100%;display:flex;align-items:center;gap:12px;background:var(--card);
+  border:1.5px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:8px;
+  cursor:pointer;font-family:var(--body);text-align:left;transition:all .15s ease;color:var(--ink);
+}
+.chanrow:active{transform:scale(.985)}
+.chanrow .ce{
+  width:38px;height:38px;border-radius:12px;background:var(--paper-2);border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
+}
+.chanrow .cm{flex:1;min-width:0}
+.dmava{
+  border-radius:50% !important;color:#fff;font-weight:700;font-size:13px;
+  border:2px solid var(--ink) !important;position:relative;background:var(--terracotta);
+}
+.dmava .st{
+  position:absolute;right:-3px;bottom:-3px;width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--card);
+}
+.chanrow .cn{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:6px;min-width:0}
+.chanrow .cn .cntext{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.chanrow .cn .lk{font-size:11px;opacity:.8;flex:none}
+.chanrow .cd{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chanrow .unread{
+  flex:none;min-width:20px;height:20px;border-radius:99px;background:var(--terracotta);color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;
+}
+.newchanbtn{
+  width:100%;border:1.5px dashed var(--ink-faint);background:transparent;border-radius:14px;
+  padding:14px;font-family:var(--body);font-size:13.5px;font-weight:600;color:var(--ink-soft);
+  cursor:pointer;margin-top:6px;transition:all .15s;
+}
+.newchanbtn:active{border-color:var(--terracotta);color:var(--terracotta)}
+.chanhead{display:flex;align-items:center;gap:11px;padding:8px 0 2px}
+.chanhead .ce{
+  width:38px;height:38px;border-radius:12px;background:var(--paper-2);border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
+}
+.chanhead .cn{font-weight:700;font-size:16px;font-family:var(--display)}
+.chanhead .cd{font-size:11.5px;color:var(--ink-soft)}
+.backbtn{
+  border:1.5px solid var(--ink);background:var(--card);border-radius:10px;width:34px;height:34px;
+  font-size:15px;cursor:pointer;flex:none;font-family:var(--body);color:var(--ink);
+}
+.backbtn:active{background:var(--ink);color:var(--paper)}
+.msg{display:flex;gap:10px;margin-bottom:15px;animation:rise .3s cubic-bezier(.2,.7,.2,1) both}
+.msg .ma{
+  width:34px;height:34px;border-radius:50%;flex:none;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:12px;border:2px solid var(--ink);
+}
+.msg .mb{flex:1;min-width:0}
+.msg .mh{font-size:11.5px;color:var(--ink-faint)}
+.msg .mh b{color:var(--ink);font-size:13px;margin-right:6px}
+.msg .mh .rolechip{
+  font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--marigold);color:var(--ink);border-radius:99px;padding:2px 7px;margin-right:6px;vertical-align:1px;
+}
+.msg .mt{font-size:13.5px;margin-top:3px;overflow-wrap:break-word}
+.msg.pin .mt{
+  background:var(--amber-soft);border:1.5px solid var(--marigold);border-radius:0 14px 14px 14px;
+  padding:10px 13px;margin-top:6px;
+}
+.composer{
+  position:fixed;bottom:calc(82px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;padding:10px 16px;display:flex;gap:8px;z-index:30;
+  background:var(--paper);border-top:1px solid #221c1410;
+}
+.composer input{
+  flex:1;border:1.5px solid var(--ink);border-radius:99px;padding:12px 17px;min-width:0;
+  font-family:var(--body);font-size:14px;background:var(--card);color:var(--ink);
+}
+.composer input:focus{outline:none;border-color:var(--terracotta)}
+.composer .send{
+  flex:none;width:44px;height:44px;border-radius:50%;border:none;background:var(--terracotta);color:#fff;
+  font-size:16px;cursor:pointer;box-shadow:0 4px 0 -1px #7c2f17;transition:all .15s;
+}
+.composer .send:active{transform:translateY(2px);box-shadow:none}
+.lockedbar{
+  position:fixed;bottom:calc(82px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;padding:10px 16px;z-index:30;
+  background:var(--paper);border-top:1px solid #221c1410;
+}
+.chanspacer{height:112px}
+.lockedbar .in{
+  background:var(--paper-2);border:1.5px dashed var(--ink-faint);border-radius:99px;
+  padding:12px 17px;font-size:12.5px;color:var(--ink-soft);text-align:center;
+}
+.joinwall{
+  text-align:center;padding:44px 24px;border:1.5px dashed var(--ink-faint);border-radius:var(--radius);
+  margin-top:18px;background:var(--card);
+}
+.joinwall .big{font-size:34px;margin-bottom:10px}
+.joinwall h3{font-family:var(--display);font-size:19px;font-weight:600;margin-bottom:6px}
+.joinwall p{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+.flabel{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);display:block;margin:14px 0 7px}
+.finput{
+  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;
+  font-family:var(--body);font-size:14px;background:var(--paper);color:var(--ink);
+}
+.finput:focus{outline:none;border-color:var(--terracotta)}
+.createbtn{
+  width:100%;margin-top:18px;border:none;background:var(--terracotta);color:#fff;font-family:var(--body);
+  font-weight:700;font-size:15px;border-radius:12px;padding:14px;cursor:pointer;
+  box-shadow:0 4px 0 -1px #7c2f17;transition:all .15s;
+}
+.createbtn:active{transform:translateY(2px);box-shadow:0 1px 0 0 #7c2f17}
+
+/* ---------- ME: personal kolam mark ---------- */
+.mekolam{width:100%;aspect-ratio:1/1;cursor:pointer}
+.mekolam svg{width:100%;height:100%;display:block}
+.mekolam:active{opacity:.75}
+
+/* ---------- GENERATIVE: KOLAM ENGINE ---------- */
+/* full-screen threshold kolam on sign-in: the WFC solver reserves the text
+   zones as BLANK cells, so lines close around the content — never over it */
+.signbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.signbg svg{display:block}
+.signpath{
+  fill:none;stroke:var(--terracotta);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;
+  opacity:.5;stroke-dasharray:1000;stroke-dashoffset:1000;animation:signdraw 3.2s ease-out .25s forwards;
+}
+@keyframes signdraw{to{stroke-dashoffset:0}}
+
+/* toast */
+#toast{
+  position:fixed;bottom:calc(98px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:12px;font-size:13.5px;
+  opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.7,.2,1);z-index:90;max-width:88%;text-align:center;
+  border:1px solid #ffffff2a;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast b{color:var(--marigold)}
+
+/* ---------- flat icons ---------- */
+.fi{
+  width:1em;height:1em;display:inline-block;vertical-align:-0.16em;flex:none;
+  fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* ---------- footer (desktop only) ---------- */
+footer.foot{display:none}
+
+/* ================= DESKTOP (>=900px) ================= */
+@media(hover:hover) and (min-width:900px){
+  .pcard:hover,.chanrow:hover,.scard:hover{border-color:var(--ink)}
+  .chip:hover{border-color:var(--ink)}
+  .mini:hover{background:var(--paper)}
+  .setrow:hover{background:var(--paper)}
+  .acct:hover{border-color:var(--ink);background:var(--paper)}
+}
+
+@media(min-width:900px){
+  /* the phone "shell" dissolves — desktop is an open page on paper */
+  .shell{max-width:1240px;border-left:none;border-right:none;box-shadow:none}
+
+  /* ---- header: wordmark · text menu · avatar ---- */
+  header.appbar{padding:0 48px;align-items:center;gap:40px;height:76px}
+  .appbar .word{font-size:26px}
+  .appbar .date{font-size:12.5px}
+  nav.tabs{
+    position:static;transform:none;width:auto;max-width:none;flex:1;justify-content:center;
+    background:none;border:none;box-shadow:none;border-radius:0;padding:0;gap:8px;
+    align-self:stretch;
+  }
+  nav.tabs button{
+    flex:none;flex-direction:row;align-items:center;justify-content:center;gap:8px;
+    padding:0 16px;font-size:14px;font-weight:600;letter-spacing:.01em;color:var(--ink-soft);
+  }
+  nav.tabs button .tic{font-size:17px}
+  nav.tabs button:hover{color:var(--ink)}
+  nav.tabs button.on{color:var(--ink)}
+  nav.tabs button.on .tic{transform:none}
+  nav.tabs button.on::after{
+    bottom:-1px;left:16px;right:16px;transform:none;
+    width:auto;height:2px;border-radius:0;background:var(--terracotta);
+  }
+  #app.show{padding-bottom:0}
+  /* short pages centre in the viewport instead of piling at the top */
+  main{padding:16px 48px 56px;min-height:calc(100vh - 250px);display:grid;align-content:center}
+
+  /* ---- editorial section heads — the single biggest "website" signal ---- */
+  h2.sec{
+    font-size:22px;font-style:normal;color:var(--ink);
+    margin:44px 0 20px;gap:16px;letter-spacing:-.01em;
+  }
+
+  /* ---- TODAY: status strip in one row, office hours full width, katte in two columns ---- */
+  #v-today.active{display:block}
+  .status-grid{grid-template-columns:repeat(4,1fr);gap:16px}
+  #aroundList{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  #aroundList .pcard{margin-bottom:0}
+  .scard{padding:20px;min-height:128px;gap:12px}
+  .scard h3{font-size:16px}
+  .scard p{font-size:12.5px}
+  .scard .sig{width:14px;height:14px}
+  .statusnote{margin-top:14px;padding:14px 16px;font-size:14px}
+  .oh{padding:22px 26px;gap:20px}
+  .oh .clock{font-size:34px}
+  .oh div p{font-size:15px}
+  .oh div small{font-size:12px}
+
+  /* ---- PEOPLE: responsive card grid ---- */
+  #peopleList{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-top:24px !important}
+  #peopleList .pcard{margin-bottom:0}
+  .filterrow{gap:8px}
+  .pcard{padding:18px;gap:14px}
+  .pcard .pa{width:48px;height:48px;font-size:16px}
+  .pcard .nm{font-size:15.5px}
+  .pcard .now{font-size:13px}
+  .pcard .backup{font-size:12.5px}
+  .mini{padding:8px 13px;font-size:12.5px}
+  .chip{padding:8px 15px;font-size:13px}
+
+  /* ---- ADDA: Discord-style workspace — quiet list left, thread right ---- */
+  #addaWrap{display:none}
+  #addaWrap:has(.view.active){
+    display:grid;grid-template-columns:290px 1fr;
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);
+    height:calc(100vh - 240px);min-height:480px;margin-top:24px;
+    box-shadow:0 10px 24px -18px #221c1430;
+  }
+  #addaWrap .view{animation:none}
+  #addaWrap .view.active{display:flex;flex-direction:column}
+  #v-adda.active{border-right:1px solid var(--line);padding:6px 12px 14px;overflow-y:auto;background:var(--paper)}
+  #v-adda h2.sec{
+    font-family:var(--body);font-size:11px;font-style:normal;font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+    margin:22px 4px 8px;gap:10px;
+  }
+  #v-adda h2.sec::after{display:none}
+  /* sidebar rows lose their card costume */
+  #v-adda .chanrow{
+    background:transparent;border-color:transparent;border-radius:12px;
+    padding:9px 10px;margin-bottom:2px;gap:10px;
+  }
+  #v-adda .chanrow:hover{background:var(--paper-2);border-color:transparent}
+  #v-adda .chanrow .ce{width:36px;height:36px;font-size:16px;background:var(--paper-2)}
+  #v-adda .chanrow:hover .ce{background:var(--card)}
+  #v-adda .chanrow .cn{font-size:13.5px;font-weight:600}
+  #v-adda .chanrow .cd{font-size:11px}
+  #v-adda .chanrow.open{background:var(--card);border-color:var(--ink)}
+  #v-adda .chanrow.open .cn{font-weight:700}
+  .newchanbtn{padding:11px;font-size:13px;margin-top:12px}
+  /* thread pane */
+  #v-channel.active{height:100%;background:var(--card)}
+  #v-channel #msgList{flex:1;overflow-y:auto;padding:22px 28px 10px;margin-top:0 !important}
+  #v-channel .joinwall{margin:26px 28px}
+  .chanhead{padding:15px 28px;border-bottom:1px solid var(--line);margin:0;background:var(--card)}
+  .chanhead .ce{display:none}
+  .chanhead .cn{font-size:19px}
+  .chanhead .cd{font-size:12.5px}
+  #backToAdda{display:none}
+  .chanspacer{display:none}
+  .msg{gap:12px;margin-bottom:18px}
+  .msg .ma{width:38px;height:38px;font-size:13px}
+  .msg .mt{font-size:14.5px}
+  .msg .mh b{font-size:14px}
+  .composer,.lockedbar{
+    position:static;transform:none;max-width:none;width:100%;
+    padding:14px 28px 18px;border-top:1px solid var(--line);background:var(--card);
+  }
+  .composer input{font-size:14.5px;padding:12px 16px;border-radius:12px}
+  .composer .send{border-radius:12px}
+  .lockedbar .in{border-radius:12px}
+
+  /* ---- WORK PIE: one full-width column, sections stacked, hairline rules divide ---- */
+  #v-pie.active{display:block}
+  .piewrap{gap:56px;margin-top:12px}
+  .pie{width:230px;height:230px}
+  .pie svg{width:230px;height:230px}
+  .pie .mid b{font-size:40px}
+  .pie .mid small{font-size:11px}
+  .legend{gap:12px}
+  .legend .li{font-size:14.5px}
+  .legend .sw{width:13px;height:13px}
+  .eqv{font-size:14px;padding:16px 20px;margin-top:28px}
+  .logform{background:transparent;border:none;padding:0;margin-top:12px}
+  .hrow{max-width:520px}
+  .hrow input{padding:12px 15px;font-size:15px}
+  .logbtn{padding:12px 20px;font-size:14.5px}
+  .ledger .row{font-size:14px;padding:13px 4px}
+
+  /* ---- ME: single column, the kolam is the hero ---- */
+  #v-me.active{display:block;max-width:680px;margin:0 auto}
+  #v-me>div[style]{display:none} /* mobile top spacer */
+  .mecard{background:transparent;border:none;padding:0}
+  .mecard h3{font-size:36px}
+  .mecard p{font-size:14.5px;margin-bottom:0}
+  .mekolam{max-width:440px;margin:26px auto 0}
+  .setrow{padding:17px 4px;font-size:14.5px;gap:14px}
+  .setrow .ic{font-size:18px}
+  .setrow small{font-size:12px}
+
+  /* ---- footer ---- */
+  footer.foot{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:48px;
+    padding:30px 48px 36px;border-top:1px solid var(--line);
+  }
+  .foot .fword{font-family:var(--display);font-size:20px;font-weight:600}
+  .foot .fword i{font-style:normal;color:var(--terracotta)}
+  .foot .ftag{
+    font-family:var(--display);font-style:italic;font-size:13.5px;color:var(--ink-soft);
+    margin-top:6px;max-width:300px;line-height:1.5;
+  }
+  .foot .fcols{display:flex;gap:44px;flex-wrap:wrap}
+  .foot .fcols b{
+    display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink);margin-bottom:6px;
+  }
+  .foot .fcols span{display:block;font-size:12.5px;color:var(--ink-soft);max-width:210px;line-height:1.5}
+
+  /* ---- SIGN-IN: full-bleed landing, kolam owns the viewport ---- */
+  #signin{
+    width:100vw;margin-left:calc(50% - 50vw);max-width:100vw;
+    padding:64px 9vw 72px;
+  }
+  .hero{max-width:560px}
+  .hero .kn{font-size:22px}
+  .hero h1{font-size:clamp(72px,10vw,120px)}
+  .hero p.def{font-size:16px;max-width:380px;margin-top:24px}
+  .signin-foot{max-width:380px} /* button sits on the hero's axis, not centred */
+  .gbtn{padding:18px 22px;font-size:16px}
+  .signin-foot small{text-align:left}
+
+  /* ---- sheets become centred modals ---- */
+  @keyframes slideupdesktop{from{transform:translate(-50%,calc(-50% + 40px));opacity:0}to{transform:translate(-50%,-50%);opacity:1}}
+  .sheet{
+    bottom:auto;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:440px;max-width:440px;border-radius:22px;border-bottom:1.5px solid var(--ink);
+    padding:24px 24px 28px;
+    animation:slideupdesktop .35s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .sheet .grab{display:none}
+
+  #toast{bottom:32px}
+}
+
+/* resize guard: desktop leaves both adda views active — on a phone show only the thread */
+@media(max-width:899px){
+  #v-adda.active:has(+ #v-channel.active){display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIGN IN ============ -->
+  <section id="signin">
+    <div class="signbg" id="signKolamBg"></div>
+    <div class="hero">
+      <span class="kn">ಕಟ್ಟೆ</span>
+      <h1>Kat<em>te</em></h1>
+      <p class="def"><b>katte</b> <i>(n., Kannada)</i> — the raised platform under a tree where a neighbourhood gathers. Presence without policing; the original availability system.</p>
+    </div>
+    <div class="signin-foot">
+      <button class="gbtn" id="signinBtn"><img class="g" src="srishti-sun.png" alt="">Continue with Srishti mail</button>
+      <small>Sign in with your <b>@srishti.ac.in</b> account · faculty &amp; staff only</small>
+    </div>
+  </section>
+
+  <!-- ============ ACCOUNT PICKER (prototype mode) ============ -->
+  <div id="sheetWrap" class="sheetwrap">
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <h4>Choose an account</h4>
+      <p class="sub">Prototype mode · no password needed — pick who you want to test as.</p>
+      <div id="acctList"></div>
+      <div class="or">or someone else</div>
+      <div class="customrow">
+        <input id="customName" placeholder="Your name — e.g. Priya Nair" autocomplete="off">
+        <button id="customGo">Enter</button>
+      </div>
+      <p class="fine">Everything stays on this device. Real version: Google sign-in locked to srishti.ac.in.</p>
+    </div>
+  </div>
+
+  <!-- ============ NEW CHANNEL SHEET ============ -->
+  <div id="chanSheetWrap" class="sheetwrap">
+    <div class="scrim" id="chanScrim"></div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <h4>Start a channel</h4>
+      <p class="sub">Everyone with a Srishti account can take part.</p>
+      <label class="flabel">Name</label>
+      <input class="finput" id="chanNameIn" placeholder="e.g. Interim 2026 · Film Club · Yelahanka Carpool" autocomplete="off">
+      <label class="flabel">Mark</label>
+      <div class="catrow" id="emojiRow"></div>
+      <label class="flabel">Privacy</label>
+      <div class="catrow" id="privRow">
+        <button class="chip on" data-priv="public"><svg class="fi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.3 4 5.3 4 8.5s-1.4 6.2-4 8.5c-2.6-2.3-4-5.3-4-8.5s1.4-6.2 4-8.5z"/></svg> Public — anyone at Srishti</button>
+        <button class="chip" data-priv="private"><svg class="fi" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg> Private — invite only</button>
+      </div>
+      <button class="createbtn" id="createChanBtn">Create channel</button>
+    </div>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div id="app">
+    <header class="appbar">
+      <div>
+        <div class="word">Kat<i>te</i></div>
+        <div class="date" id="today-date"></div>
+      </div>
+      <nav class="tabs">
+        <button class="on" data-v="today"><span class="tic"><svg class="fi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19"/></svg></span>Today</button>
+        <button data-v="people"><span class="tic"><svg class="fi" viewBox="0 0 24 24"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M2.8 20c.7-3.4 3-5.2 5.7-5.2s5 1.8 5.7 5.2M13.8 14.9c2.2.1 4.3 1.7 4.9 5.1"/></svg></span>People</button>
+        <button data-v="adda"><span class="tic"><svg class="fi" viewBox="0 0 24 24"><path d="M3.5 5.5h17v11h-9.2L7 20v-3H3.5z"/></svg></span>Adda</button>
+        <button data-v="pie"><span class="tic"><svg class="fi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12l6 6"/></svg></span>Work Pie</button>
+        <button data-v="me"><span class="tic"><svg class="fi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.3"/><path d="M12 9.7c-2-1-2.6-3-1.7-4.8 1.8-1 3.6.2 3.7 2.3M14.3 12c1-2 3-2.6 4.8-1.7 1 1.8-.2 3.6-2.3 3.7M12 14.3c2 1 2.6 3 1.7 4.8-1.8 1-3.6-.2-3.7-2.3M9.7 12c-1 2-3 2.6-4.8 1.7-1-1.8.2-3.6 2.3-3.7"/></svg></span>Me</button>
+      </nav>
+      <div class="avatar" id="topAvatar">·</div>
+    </header>
+
+    <main>
+      <!-- ---------- TODAY ---------- -->
+      <section class="view active" id="v-today">
+        <div class="today-left">
+          <div class="mystatus">
+            <h2 class="sec">Where are you today?</h2>
+            <div class="status-grid" id="statusGrid">
+              <div class="scard" data-s="campus">
+                <div class="sig"></div>
+                <div><h3>On campus</h3><p>At Yelahanka · findable in person</p></div>
+              </div>
+              <div class="scard" data-s="online">
+                <div class="sig"></div>
+                <div><h3>Elsewhere, reachable</h3><p>Working remotely · open to calls</p></div>
+              </div>
+              <div class="scard" data-s="studio">
+                <div class="sig"></div>
+                <div><h3>Studio / deep work</h3><p>In practice · please don't disturb</p></div>
+              </div>
+              <div class="scard" data-s="away">
+                <div class="sig"></div>
+                <div><h3>Away</h3><p>Leave, travel or fieldwork</p></div>
+              </div>
+            </div>
+            <input class="statusnote" id="statusNote" placeholder="Add a note — “planning week, on email till 6” ">
+          </div>
+
+          <h2 class="sec">Your office hours</h2>
+          <div class="oh">
+            <div class="clock">2–4</div>
+            <div>
+              <p><b>Open studio hours</b> · today</p>
+              <small>Online or in person · 2 of 4 slots booked</small>
+            </div>
+            <span class="pill">Live</span>
+          </div>
+        </div>
+
+        <div class="today-right">
+          <h2 class="sec">On the katte right now</h2>
+          <div id="aroundList"></div>
+        </div>
+
+      </section>
+
+      <!-- ---------- PEOPLE ---------- -->
+      <section class="view" id="v-people">
+        <h2 class="sec">Find a colleague</h2>
+        <div class="filterrow" id="filters">
+          <button class="chip on" data-f="all">Everyone</button>
+          <button class="chip" data-f="campus">On campus</button>
+          <button class="chip" data-f="online">Reachable</button>
+          <button class="chip" data-f="studio">Deep work</button>
+          <button class="chip" data-f="away">Away</button>
+        </div>
+        <div id="peopleList" style="margin-top:10px"></div>
+      </section>
+
+      <!-- ---------- ADDA + CHANNEL (Discord-style split on desktop) ---------- -->
+      <div id="addaWrap">
+      <!-- ---------- ADDA (channel list) ---------- -->
+      <section class="view" id="v-adda">
+        <div id="chanList"></div>
+        <button class="newchanbtn" id="newChanBtn">＋ Start a channel</button>
+      </section>
+
+      <!-- ---------- CHANNEL (thread) ---------- -->
+      <section class="view" id="v-channel">
+        <div class="chanhead">
+          <button class="backbtn" id="backToAdda">←</button>
+          <div class="ce" id="chEmoji"></div>
+          <div style="flex:1;min-width:0">
+            <div class="cn" id="chName">—</div>
+            <div class="cd" id="chMeta">—</div>
+          </div>
+        </div>
+        <div id="msgList" style="margin-top:16px"></div>
+        <div class="joinwall" id="joinWall" style="display:none">
+          <div class="big"><svg class="fi" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></div>
+          <h3>This adda is private</h3>
+          <p id="joinWallText">Membership is on request — the channel keepers will let you in.</p>
+          <button class="mini solid" data-toast="Request sent — the channel keepers have been notified">Request to join</button>
+        </div>
+        <div class="chanspacer"></div>
+        <div class="composer" id="composer">
+          <input id="msgIn" placeholder="Message…" autocomplete="off">
+          <button class="send" id="sendBtn"><svg class="fi" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg></button>
+        </div>
+        <div class="lockedbar" id="lockedBar" style="display:none"><div class="in" id="lockedText"><svg class="fi" viewBox="0 0 24 24" style="margin-right:4px;vertical-align:-3px"><path d="M3.5 10.5v3a1.5 1.5 0 0 0 1.5 1.5h1l.9 4.4a1 1 0 0 0 1 .8h1.3l-.7-5.2M6 10.5l11-4.7v12.4L6 13.5"/></svg>Only the Dean's office posts here — everyone can read</div></div>
+      </section>
+      </div>
+
+      <!-- ---------- WORK PIE ---------- -->
+      <section class="view" id="v-pie">
+        <h2 class="sec">Your work pie · this semester</h2>
+        <div class="piewrap">
+          <div class="pie">
+            <svg viewBox="0 0 42 42" width="150" height="150" id="pieSvg"></svg>
+            <div class="mid"><b id="pieTotal">0</b><small>credits</small></div>
+          </div>
+          <div class="legend" id="pieLegend"></div>
+        </div>
+        <div class="eqv" id="pieEqv"></div>
+
+        <h2 class="sec">Log teaching-plus work</h2>
+        <div class="logform">
+          <label>What kind of work?</label>
+          <div class="catrow" id="catRow"></div>
+          <label>Hours spent</label>
+          <div class="hrow">
+            <input type="number" id="hoursIn" min="0.5" step="0.5" placeholder="e.g. 3" inputmode="decimal">
+            <button class="logbtn" id="logBtn">Log it</button>
+          </div>
+        </div>
+
+        <h2 class="sec">Recent entries</h2>
+        <div class="ledger" id="ledger"></div>
+      </section>
+
+      <!-- ---------- ME ---------- -->
+      <section class="view" id="v-me">
+        <div style="height:14px"></div>
+        <div class="mecard">
+          <h3 id="meName">—</h3>
+          <p id="meEmail">—</p>
+          <div class="mekolam" id="meKolam"></div>
+        </div>
+        <h2 class="sec">Availability settings</h2>
+        <div class="setrow" data-set="office"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/></svg></span><div>Office hours<small>When students &amp; colleagues can book you</small></div><span class="val"></span><button class="editbtn" aria-label="Edit office hours"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
+        <div class="setrow" data-set="backup"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><circle cx="9" cy="9" r="4"/><circle cx="15" cy="15" r="4"/></svg></span><div>My backup<small>Who to ask when you're away</small></div><span class="val"></span><button class="editbtn" aria-label="Edit backup"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
+        <div class="setrow" data-set="checkin"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 1 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span><div>Campus check-in<small>Opt-in, on-campus only, never tracks location off it</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle campus check-in"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
+        <div class="setrow" data-set="quiet"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.6 2.5H4.4z"/><path d="M9.7 20.5a2.4 2.4 0 0 0 4.6 0"/></svg></span><div>Quiet hours<small>No pings during studio practice</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle quiet hours"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
+        <button class="setrow" id="signoutBtn"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M9 4H5.5a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 5.5 20H9M14 16l4-4-4-4M18 12H9"/></svg></span><div>Sign out<small>Switch to a different test account</small></div><span class="val">→</span></button>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div>
+        <div class="fword">Kat<i>te</i></div>
+        <p class="ftag">The raised platform under a tree, where a neighbourhood gathers. Under the tree, everyone can find you.</p>
+      </div>
+      <div class="fcols">
+        <div><b>Availability</b><span>Mark where you are each morning on Today — it replaces the sign-in register.</span></div>
+        <div><b>Office hours</b><span>Colleagues book your open slots from the People tab. Away? Name a backup in Me.</span></div>
+        <div><b>Prototype</b><span>Everything stays on this device. The real version signs in with srishti.ac.in.</span></div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ------------ data ------------ */
+const STATUS = {
+  campus:{label:"On campus", hex:"#3c7a45"},
+  online:{label:"Elsewhere · reachable", hex:"#37538f"},
+  studio:{label:"Studio / deep work", hex:"#e79f1f"},
+  away:{label:"Away", hex:"#8d8577"}
+};
+const PEOPLE = [
+  {n:"Meera Iyer", r:"Film & Moving Image", s:"campus", note:"Edit suite B till 5", backup:null, c:"#c2502c"},
+  {n:"Arvind Shanbhag", r:"Industrial Design", s:"studio", note:"Wood workshop — model making", backup:"Zoya Khan", c:"#37538f"},
+  {n:"Zoya Khan", r:"Textiles", s:"online", note:"Planning week · on calls 11–6", backup:null, c:"#3c7a45"},
+  {n:"Deepak Rao", r:"Foundation Studies", s:"campus", note:"Reviews in N-block", backup:null, c:"#e79f1f"},
+  {n:"Anitha Kulkarni", r:"Visual Communication", s:"away", note:"Kochi recce · back Monday", backup:"Deepak Rao", c:"#8d8577"},
+  {n:"Tashi Wangchuk", r:"Contemporary Art Practice", s:"online", note:"PhD supervision calls today", backup:null, c:"#7a4f9e"},
+  {n:"Lakshmi Prasad", r:"Design-led Innovation", s:"campus", note:"Admissions panel, free after 3", backup:null, c:"#b5651d"},
+];
+const CATS = [
+  {k:"PhD supervision", w:1.5, hex:"#37538f"},
+  {k:"Master classes", w:1.2, hex:"#c2502c"},
+  {k:"Admissions", w:1.0, hex:"#e79f1f"},
+  {k:"Community work", w:1.0, hex:"#3c7a45"},
+  {k:"Audits & accreditation", w:1.0, hex:"#8d8577"},
+  {k:"Recce & fieldwork", w:1.2, hex:"#7a4f9e"},
+  {k:"Curriculum planning", w:1.0, hex:"#b5651d"},
+];
+const SEED_LEDGER = [
+  {cat:"PhD supervision", hrs:6, when:"This week"},
+  {cat:"Admissions", hrs:9, when:"Last week"},
+  {cat:"Master classes", hrs:4, when:"Last week"},
+  {cat:"Community work", hrs:5, when:"June"},
+  {cat:"Curriculum planning", hrs:8, when:"June"},
+];
+const TEST_ACCOUNTS = [
+  {n:"Ujjwal Agarwal", role:"Faculty"},
+  {n:"Meera Iyer", role:"Film & Moving Image"},
+  {n:"Zoya Khan", role:"Textiles"},
+  {n:"Kavita Menon", role:"Dean"},
+];
+const AVATAR_COLORS = ["#c2502c","#37538f","#3c7a45","#7a4f9e","#b5651d","#8d6a1f"];
+const SEED_CHANNELS = [
+  {id:"announce", emoji:"megaphone", name:"Announcements", desc:"Official · posts from the Dean's office", cat:"Official", locked:true, private:false, member:true, members:212, unread:2},
+  {id:"askoffice", emoji:"bell", name:"Ask the Office", desc:"Gubbi · answers from admin circulars", cat:"Official", bot:true, private:false, member:true, members:212, unread:0},
+  {id:"director", emoji:"columns", name:"Director's Corner", desc:"Notes & provocations from leadership", cat:"Official", locked:true, private:false, member:true, members:198, unread:1},
+  {id:"commons", emoji:"coffee", name:"Faculty Commons", desc:"Open floor for all faculty & staff", cat:"Community", private:false, member:true, members:146, unread:0},
+  {id:"workpie", emoji:"pie", name:"Work Pie · availability", desc:"Continuing the availability conversation", cat:"Community", private:false, member:true, members:57, unread:3},
+  {id:"exhibitions", emoji:"frame", name:"Exhibitions & Openings", desc:"Shows, screenings, openings around town", cat:"Community", private:false, member:true, members:89, unread:0},
+  {id:"chai", emoji:"teacup", name:"Chai Katte", desc:"The informal one. Memes allowed.", cat:"Community", private:false, member:true, members:120, unread:5},
+  {id:"phd", emoji:"gradcap", name:"PhD Supervisors", desc:"Private · membership on request", cat:"Private", private:true, member:false, members:14, unread:0},
+];
+const SEED_MSGS = {
+  askoffice:[
+    {a:"Gubbi", role:"Bot", t:"Ask me about dates, deadlines and contacts — I answer only from the admin office's own circulars, and I name the document I read. Try: “when is the NAAC visit?”", w:"Mon 09:00"},
+  ],
+  announce:[
+    {a:"Kavita Menon", role:"Dean", t:"Katte pilot is live 🌱 For this semester it replaces the sign-in register. Mark your availability honestly — that is the whole system.", w:"Mon 09:12"},
+    {a:"Kavita Menon", role:"Dean", t:"NAAC peer team visits Jul 14–16. Schools, please have documentation folders updated by Friday. Admin will help — ask in Faculty Commons.", w:"Wed 16:40"},
+  ],
+  director:[
+    {a:"Kavita Menon", role:"Dean", t:"On “availability”: I read the Work Pie notes. We hired practitioners, not desk-sitters. Let's design for trust and see what breaks. Discussion is open in Faculty Commons.", w:"Tue 08:03"},
+  ],
+  commons:[
+    {a:"Tashi Wangchuk", t:"Sharing my PhD cohort's open review schedule — all welcome, especially Foundation folks.", w:"Tue 11:20"},
+    {a:"Lakshmi Prasad", t:"Reminder that the admissions panel needs one more reader for the DLI portfolios this week 🙏", w:"Wed 10:05"},
+  ],
+  workpie:[
+    {a:"Zoya Khan", t:"Proposal: recce & fieldwork weighted ×1.2 feels low — a travel day is a full day, plus the recovery.", w:"Tue 18:12"},
+    {a:"Arvind Shanbhag", t:"Agree. Also — can office hours sync with the timetable so students see free slots without asking?", w:"Tue 18:30"},
+    {a:"Meera Iyer", t:"The backup system already saved me twice this week. Small thing, huge relief.", w:"Wed 09:15"},
+  ],
+  exhibitions:[
+    {a:"Meera Iyer", t:"Student film showcase at Bangalore International Centre, Saturday 6pm. Bring people!", w:"Mon 14:44"},
+  ],
+  chai:[
+    {a:"Deepak Rao", t:"Canteen has avarekai upma today. This is an official announcement. 😤", w:"09:02"},
+    {a:"Lakshmi Prasad", t:"Chai machine on the 3rd floor is FIXED 🎉", w:"09:41"},
+  ],
+  "dm-meera-iyer":[
+    {a:"Meera Iyer", t:"Sending you the rough cut link tonight — hold me to it 🎬", w:"Wed 21:12"},
+  ],
+};
+const SEED_DM_UNREAD = {"dm-meera-iyer":1};
+const CHAN_EMOJI = ["book","film","thread","hammer","headphones","sprout","camera","bowl"];
+
+/* ------------ state ------------ */
+let me = null;           // {n, email, role}
+let ledger = [];
+let myStatus = "campus";
+let selCat = CATS[0].k;
+let filter = "all";
+let curChan = null;
+let customChannels = JSON.parse(localStorage.getItem("katte-channels")||"[]");
+let extraMsgs = JSON.parse(localStorage.getItem("katte-msgs")||"{}");
+let readChans = new Set();
+let newChanEmoji = CHAN_EMOJI[0];
+let newChanPriv = "public";
+
+/* ------------ helpers ------------ */
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+const isDesktop = () => matchMedia("(min-width:900px)").matches;
+const initials = n=>n.trim().split(/\s+/).map(x=>x[0].toUpperCase()).join("").slice(0,2);
+const emailFor = n=>{
+  const parts=n.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return (parts.length>1 ? parts[parts.length-1]+"."+parts[0] : parts[0])+"@srishti.ac.in";
+};
+const colorFor = n=>AVATAR_COLORS[[...n].reduce((a,ch)=>a+ch.charCodeAt(0),0)%AVATAR_COLORS.length];
+const userKey = k=>`katte-${k}-${me?me.email:"anon"}`;
+function toast(msg){ const t=$("#toast"); t.innerHTML=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600); }
+
+/* ------------ flat line icons — same stroke language as the kolam ------------ */
+const ICONS={
+  sun:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19"/>',
+  people:'<circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M2.8 20c.7-3.4 3-5.2 5.7-5.2s5 1.8 5.7 5.2M13.8 14.9c2.2.1 4.3 1.7 4.9 5.1"/>',
+  chat:'<path d="M3.5 5.5h17v11h-9.2L7 20v-3H3.5z"/>',
+  pie:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12l6 6"/>',
+  flower:'<circle cx="12" cy="12" r="2.3"/><path d="M12 9.7c-2-1-2.6-3-1.7-4.8 1.8-1 3.6.2 3.7 2.3M14.3 12c1-2 3-2.6 4.8-1.7 1 1.8-.2 3.6-2.3 3.7M12 14.3c2 1 2.6 3 1.7 4.8-1.8 1-3.6-.2-3.7-2.3M9.7 12c-1 2-3 2.6-4.8 1.7-1-1.8.2-3.6 2.3-3.7"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/>',
+  link:'<circle cx="9" cy="9" r="4"/><circle cx="15" cy="15" r="4"/>',
+  pin:'<path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 1 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l1.6 2.5H4.4z"/><path d="M9.7 20.5a2.4 2.4 0 0 0 4.6 0"/>',
+  logout:'<path d="M9 4H5.5a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 5.5 20H9M14 16l4-4-4-4M18 12H9"/>',
+  megaphone:'<path d="M3.5 10.5v3a1.5 1.5 0 0 0 1.5 1.5h1l.9 4.4a1 1 0 0 0 1 .8h1.3l-.7-5.2M6 10.5l11-4.7v12.4L6 13.5"/>',
+  columns:'<path d="M4 20h16M5 20V9M9 20V9M15 20V9M19 20V9M3.5 9 12 4.5 20.5 9"/>',
+  coffee:'<path d="M4.5 8h12v6.5a3.5 3.5 0 0 1-3.5 3.5H8a3.5 3.5 0 0 1-3.5-3.5V8z"/><path d="M16.5 9.5H18a2.3 2.3 0 0 1 0 4.6h-1.5M8 4.2c-.5.7-.5 1.3 0 2M11.3 4.2c-.5.7-.5 1.3 0 2"/>',
+  frame:'<rect x="4" y="4.5" width="16" height="15" rx="1"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 16.5l4.5-4.5 3 3 3.5-4 4.5 5.5"/>',
+  teacup:'<path d="M4.5 9h11v5.5a3.5 3.5 0 0 1-3.5 3.5H8a3.5 3.5 0 0 1-3.5-3.5V9z"/><path d="M15.5 10h1.7a2 2 0 0 1 0 4h-1.7M3 20.5h14"/>',
+  gradcap:'<path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6 11.6v4.4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.4M21.5 9.5v6"/>',
+  lock:'<rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>',
+  book:'<path d="M4 5.5h6a2.5 2.5 0 0 1 2.5 2.5v11A2 2 0 0 0 10.5 17H4zM20 5.5h-6a2.5 2.5 0 0 0-2.5 2.5v11A2 2 0 0 1 13.5 17H20z"/>',
+  film:'<rect x="3.5" y="5" width="17" height="14" rx="1.5"/><path d="M8 5v14M16 5v14M3.5 9.5H8M3.5 14.5H8M16 9.5h4.5M16 14.5h4.5"/>',
+  thread:'<path d="M5 5c8 1 8 6 0 7s-8 6 0 7M11 5c8 1 8 6 0 7s-8 6 0 7"/>',
+  hammer:'<path d="M14.5 6.5 18 3l3 3-3.5 3.5M13 8l-9 9 2 2 9-9M9 12l3 3"/>',
+  headphones:'<path d="M4.5 18v-5a7.5 7.5 0 0 1 15 0v5"/><rect x="3" y="15.5" width="3.5" height="5.5" rx="1.2"/><rect x="17.5" y="15.5" width="3.5" height="5.5" rx="1.2"/>',
+  sprout:'<path d="M12 21v-9M12 12c0-4-3-6-7-6 0 4 3 6 7 6zm0 0c0-3.5 2.5-5.5 6-5.5-.3 3.3-2.7 5.5-6 5.5z"/>',
+  camera:'<path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/>',
+  bowl:'<path d="M3.5 11h17a8.5 3.2 0 0 1-17 0z"/><path d="M4.5 14.2c.6 2.8 3.6 5 7.5 5s6.9-2.2 7.5-5"/>',
+  send:'<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/>',
+  pencil:'<path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/>',
+};
+function icon(name,cls){ return `<svg class="fi${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||""}</svg>`; }
+
+/* ------------ auth (prototype: passwordless) ------------ */
+function openPicker(){
+  $("#acctList").innerHTML = TEST_ACCOUNTS.map((a,i)=>`
+    <button class="acct" data-i="${i}">
+      <span class="aa" style="background:${colorFor(a.n)}">${initials(a.n)}</span>
+      <span><span class="nm">${a.n}</span><br><span class="em">${emailFor(a.n)} · ${a.role}</span></span>
+    </button>`).join("");
+  $("#sheetWrap").classList.add("open");
+  $$("#acctList .acct").forEach(b=>b.addEventListener("click",()=>{
+    const a=TEST_ACCOUNTS[+b.dataset.i];
+    enterApp({n:a.n, email:emailFor(a.n), role:a.role});
+  }));
+}
+function closePicker(){ $("#sheetWrap").classList.remove("open"); }
+function customEnter(){
+  const name=$("#customName").value.trim();
+  if(!name){ $("#customName").focus(); toast("Type a name first"); return; }
+  enterApp({n:name, email:emailFor(name), role:"Faculty"});
+}
+function enterApp(user, silent){
+  me=user;
+  localStorage.setItem("katte-user", JSON.stringify(me));
+  ledger = JSON.parse(localStorage.getItem(userKey("ledger"))||"null") || SEED_LEDGER.slice();
+  myStatus = localStorage.getItem(userKey("status")) || "campus";
+  closePicker();
+  $("#signin").style.display="none";
+  $("#app").classList.add("show");
+  // identity everywhere
+  const top=$("#topAvatar");
+  top.textContent=initials(me.n); top.style.background=colorFor(me.n);
+  $("#meName").textContent=me.n;
+  $("#meEmail").textContent=(me.role||"Faculty")+" · "+me.email;
+  $$(".scard").forEach(c=>c.classList.toggle("sel",c.dataset.s===myStatus));
+  renderPeople(); renderCats(); renderPie(); renderChannels(); renderMeKolam(); loadSettings();
+  if(!silent) toast(isDean()
+    ? `Signed in as <b>${me.email}</b> — you can post in Announcements`
+    : `Signed in as <b>${me.email}</b>`);
+}
+function signOut(){
+  localStorage.removeItem("katte-user");
+  $("#app").classList.remove("show");
+  $("#signin").style.display="flex";
+  $("#customName").value="";
+  renderSigninKolam(); // re-measure text boxes now that the screen is visible
+  toast("Signed out");
+}
+
+/* ------------ nav ------------ */
+function go(v,btn){
+  const desktop=isDesktop();
+  $$(".view").forEach(x=>{
+    if(desktop && v==="adda" && x.id==="v-channel" && curChan) return; // keep the open thread in the split pane
+    x.classList.remove("active");
+  });
+  $("#v-"+v).classList.add("active");
+  $$("nav.tabs button").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  window.scrollTo({top:0});
+  if(v==="adda" && desktop && !curChan){
+    // reopen where you left off; Announcements for first-timers
+    const last=localStorage.getItem(userKey("lastchan"));
+    if(last && last.startsWith("dm:")) openDM(last.slice(3));
+    else if(last && allChannels().some(c=>c.id===last)) openChannel(last);
+    else openChannel(allChannels().some(c=>c.id==="announce") ? "announce" : allChannels()[0].id);
+  }
+}
+
+/* ------------ status ------------ */
+function setStatus(s){
+  myStatus=s; localStorage.setItem(userKey("status"),s);
+  $$(".scard").forEach(c=>c.classList.toggle("sel",c.dataset.s===s));
+  toast(`You're marked <b>${STATUS[s].label}</b> — colleagues can see this`);
+}
+
+/* ------------ people ------------ */
+function personCard(p){
+  const st=STATUS[p.s];
+  const acts = (p.s==="campus"||p.s==="online"
+    ? `<button class="mini solid" data-toast="Slot requested with <b>${p.n}</b> — you&#39;ll get a calendar invite">Book slot</button>` : "")
+    + `<button class="mini" data-dm="${p.n}">Message</button>`;
+  return `<div class="pcard">
+    <div class="pa" style="background:${p.c}">${initials(p.n)}<span class="st" style="background:${st.hex}"></span></div>
+    <div class="meta">
+      <div class="nm">${p.n}</div>
+      <div class="role">${p.r}</div>
+      <div class="now"><span class="d" style="background:${st.hex}"></span>${st.label}${p.note?` — <span style="color:var(--ink-soft)">${p.note}</span>`:""}</div>
+      ${p.backup?`<div class="backup">Away? Ask <b>${p.backup}</b> instead</div>`:""}
+    </div>
+    <div class="act">${acts}</div>
+  </div>`;
+}
+function renderPeople(){
+  const others = PEOPLE.filter(p=>p.n!==(me&&me.n));
+  const list = others.filter(p=>filter==="all"||p.s===filter);
+  $("#peopleList").innerHTML = list.length? list.map(personCard).join("") :
+    `<p style="color:var(--ink-faint);text-align:center;padding:30px 0;font-style:italic">Nobody here right now.</p>`;
+  $("#aroundList").innerHTML = others.filter(p=>p.s==="campus"||p.s==="online").slice(0,4).map(personCard).join("");
+}
+
+/* ------------ work pie ------------ */
+function credits(e){ const c=CATS.find(c=>c.k===e.cat); return e.hrs*(c?c.w:1); }
+function renderPie(){
+  const byCat={};
+  ledger.forEach(e=>{ byCat[e.cat]=(byCat[e.cat]||0)+credits(e); });
+  const total=Object.values(byCat).reduce((a,b)=>a+b,0);
+  $("#pieTotal").textContent=Math.round(total);
+  let off=0, segs="";
+  CATS.forEach(c=>{
+    const v=byCat[c.k]||0; if(!v) return;
+    const frac=v/total;
+    segs+=`<circle r="15.9155" cx="21" cy="21" fill="transparent" stroke="${c.hex}" stroke-width="7"
+      stroke-dasharray="${(frac*100).toFixed(2)} ${(100-frac*100).toFixed(2)}" stroke-dashoffset="${(-off*100).toFixed(2)}"
+      pathLength="100"></circle>`;
+    off+=frac;
+  });
+  $("#pieSvg").innerHTML=segs;
+  $("#pieLegend").innerHTML=CATS.filter(c=>byCat[c.k]).map(c=>
+    `<div class="li"><span class="sw" style="background:${c.hex}"></span>${c.k}<b>${Math.round(byCat[c.k])}</b></div>`).join("");
+  const weeks=(total/12).toFixed(1);
+  $("#pieEqv").innerHTML=`This term your teaching-plus work equals <b>≈ ${weeks} teaching weeks</b> of load. It counts here — visible to you and your school head, nobody else.`;
+  $("#ledger").innerHTML=ledger.slice().reverse().slice(0,8).map(e=>{
+    const c=CATS.find(c=>c.k===e.cat);
+    return `<div class="row"><span class="sw" style="background:${c.hex}"></span><span class="what">${e.cat} <small>· ${e.when}</small></span><b>${e.hrs}h → ${credits(e).toFixed(1)} cr</b></div>`;
+  }).join("");
+}
+function renderCats(){
+  $("#catRow").innerHTML=CATS.map(c=>
+    `<button class="chip ${c.k===selCat?"on":""}" data-cat="${c.k}">${c.k} <span style="opacity:.55">×${c.w}</span></button>`).join("");
+  $$("#catRow .chip").forEach(b=>b.addEventListener("click",()=>{ selCat=b.dataset.cat; renderCats(); }));
+}
+function logWork(){
+  const h=parseFloat($("#hoursIn").value);
+  if(!h||h<=0){ toast("Add the hours first"); return; }
+  ledger.push({cat:selCat, hrs:h, when:"Today"});
+  localStorage.setItem(userKey("ledger"),JSON.stringify(ledger));
+  $("#hoursIn").value="";
+  renderPie();
+  const c=CATS.find(c=>c.k===selCat);
+  toast(`Logged <b>${h}h ${selCat}</b> → ${(h*c.w).toFixed(1)} credits`);
+}
+
+/* ------------ generative art: seeded rng ------------ */
+const hashStr = s=>{ let h=2166136261; for(const ch of s){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619); } return h>>>0; };
+const mulberry32 = seed=>()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+const todaySeed = ()=>new Date().toLocaleDateString("en-IN");
+
+/* ------------ KOLAM ENGINE — Ujjwal's long-form WFC program, ported ------------
+   Tiles declare which edges a line crosses (e:[top,right,bottom,left]); the WFC
+   solver guarantees neighbours agree, so lines always continue or close — never
+   dangle. Cells may subdivide into nested 3×3 kolams whose borders inherit the
+   parent tile's edges. Seeded: same seed + same weights → the same weave. */
+const KTILES=[
+  {e:[0,0,0,0],type:"BLANK"},
+  {e:[1,1,1,1],type:"CROSS"},
+  {e:[1,1,1,1],type:"CURVES"},
+  {e:[1,1,1,1],type:"LOOPS"},
+  {e:[0,1,1,1],type:"CAP_T"},
+  {e:[1,0,1,1],type:"CAP_R"},
+  {e:[1,1,0,1],type:"CAP_B"},
+  {e:[1,1,1,0],type:"CAP_L"},
+];
+function kolamGen(seed,opt){
+  const r=mulberry32(hashStr(seed));
+  const {cols,rows,wts}=opt;
+  const maxDepth=opt.maxDepth??1, subdivide=opt.subdivide??.75, spatial=opt.spatial??1.4, decay=.6;
+  const margin=opt.margin??12, W=opt.W??380;
+  const cell=(W-2*margin)/cols, H=2*margin+rows*cell;
+  const cx0=W/2, cy0=H/2;
+  const curves=[];
+
+  function runWFC(rr,cc,border,blocked){
+    const total=rr*cc;
+    const wave=Array.from({length:total},()=>new Set(KTILES.map((_,i)=>i)));
+    const idx=(R,C)=>R*cc+C;
+    const clampEdge=(wi,eI,req)=>{
+      for(const t of [...wave[wi]]) if(KTILES[t].e[eI]!==req) wave[wi].delete(t);
+      if(!wave[wi].size) wave[wi].add(0);
+    };
+    const propagate=stack=>{
+      let safety=0;
+      while(stack.length && safety++<10000){
+        const cur=stack.pop(), R=Math.floor(cur/cc), C=cur%cc;
+        for(const [dr,dc,myE,thE] of [[-1,0,0,2],[0,1,1,3],[1,0,2,0],[0,-1,3,1]]){
+          const nr=R+dr, nc=C+dc;
+          if(nr<0||nr>=rr||nc<0||nc>=cc) continue;
+          const ni=idx(nr,nc);
+          if(wave[ni].size<=1) continue;
+          const myVals=new Set();
+          for(const t of wave[cur]) myVals.add(KTILES[t].e[myE]);
+          const before=wave[ni].size;
+          for(const t of [...wave[ni]]) if(!myVals.has(KTILES[t].e[thE])) wave[ni].delete(t);
+          if(!wave[ni].size) wave[ni].add(0);
+          if(wave[ni].size<before) stack.push(ni);
+        }
+      }
+    };
+    if(blocked && blocked.size){
+      const seeds=[];
+      for(const key of blocked){
+        const [R,C]=key.split(",").map(Number);
+        if(R>=0&&R<rr&&C>=0&&C<cc){ wave[idx(R,C)]=new Set([0]); seeds.push(idx(R,C)); }
+      }
+      propagate(seeds); // neighbours close their facing edges — lines end politely at the reserve
+    }
+    if(border){
+      const seeds=[];
+      for(let R=0;R<rr;R++)for(let C=0;C<cc;C++){
+        const wi=idx(R,C); let s=false;
+        if(R===0){clampEdge(wi,0,border[0]);s=true;}
+        if(C===cc-1){clampEdge(wi,1,border[1]);s=true;}
+        if(R===rr-1){clampEdge(wi,2,border[2]);s=true;}
+        if(C===0){clampEdge(wi,3,border[3]);s=true;}
+        if(s) seeds.push(wi);
+      }
+      propagate(seeds);
+    }
+    for(let it=0;it<total;it++){
+      let mE=Infinity, mI=-1;
+      for(let i=0;i<total;i++){
+        if(wave[i].size<=1) continue;
+        const e=wave[i].size+r()*.01;
+        if(e<mE){mE=e;mI=i;}
+      }
+      if(mI===-1) break;
+      const opts=[...wave[mI]];
+      const sum=opts.reduce((a,b)=>a+wts[b],0);
+      let rv=r()*sum, chosen=opts[opts.length-1];
+      for(let k=0;k<opts.length;k++){ rv-=wts[opts[k]]; if(rv<=0){chosen=opts[k];break;} }
+      wave[mI]=new Set([chosen]);
+      propagate([mI]);
+    }
+    const g=[];
+    for(let R=0;R<rr;R++){ g[R]=[]; for(let C=0;C<cc;C++){ const s=wave[idx(R,C)]; g[R][C]=s.size?[...s][0]:0; } }
+    return g;
+  }
+
+  const shouldSub=(tileIdx,depth,ccx,ccy)=>{
+    if(depth>=maxDepth) return false;
+    const nx=(ccx-cx0)/(W/2), ny=(ccy-cy0)/(H/2);
+    const sp=1+spatial*(.15-.35*(nx*nx+ny*ny));
+    const dd=depth===0?1:Math.pow(decay,depth);
+    if(KTILES[tileIdx].type==="BLANK") return depth===0 && r()<.06*subdivide*sp;
+    return r()<.82*subdivide*sp*dd;
+  };
+
+  const emit=(tileIdx,x,y,w,h)=>{
+    const tile=KTILES[tileIdx];
+    if(tile.type==="BLANK") return;
+    const xC=x+w/2, yC=y+h/2;
+    const pts=[{x:xC,y:y},{x:x+w,y:yC},{x:xC,y:y+h},{x:x,y:yC}];
+    const cv=(a,b)=>{
+      const s=pts[a], e=pts[b];
+      curves.push({x1:s.x,y1:s.y,
+        c1x:s.x+(xC-s.x)*.58, c1y:s.y+(yC-s.y)*.58,
+        c2x:e.x+(xC-e.x)*.58, c2y:e.y+(yC-e.y)*.58,
+        x2:e.x,y2:e.y});
+    };
+    switch(tile.type){
+      case "CROSS": cv(0,2);cv(1,3);break;
+      case "CURVES": cv(0,3);cv(1,2);break;
+      case "LOOPS": cv(0,1);cv(2,3);break;
+      case "CAP_T": cv(1,2);cv(2,3);break;
+      case "CAP_R": cv(0,3);cv(2,3);break;
+      case "CAP_B": cv(0,1);cv(0,3);break;
+      case "CAP_L": cv(0,1);cv(1,2);break;
+    }
+  };
+
+  const processCell=(tileIdx,x,y,w,h,depth)=>{
+    if(shouldSub(tileIdx,depth,x+w/2,y+h/2)){
+      const N=3, sw=w/N, sh=h/N;
+      const sub=runWFC(N,N,KTILES[tileIdx].e);
+      for(let R=0;R<N;R++)for(let C=0;C<N;C++) processCell(sub[R][C],x+C*sw,y+R*sh,sw,sh,depth+1);
+    } else emit(tileIdx,x,y,w,h);
+  };
+
+  const blocked=opt.blockedCells||null;
+  const root=runWFC(rows,cols,null,blocked);
+  for(let R=0;R<rows;R++)for(let C=0;C<cols;C++){
+    if(blocked && blocked.has(R+","+C)) continue; // reserved zones stay empty
+    processCell(root[R][C],margin+C*cell,margin+R*cell,cell,cell,0);
+  }
+
+  // macro symmetry — mirror the bezier control points
+  const sym=opt.symmetry||"none";
+  if(sym!=="none"){
+    const mx=c=>(c.x1+c.x2)/2, my=c=>(c.y1+c.y2)/2;
+    const rx=c=>({x1:2*cx0-c.x1,y1:c.y1,c1x:2*cx0-c.c1x,c1y:c.c1y,c2x:2*cx0-c.c2x,c2y:c.c2y,x2:2*cx0-c.x2,y2:c.y2});
+    const ry=c=>({x1:c.x1,y1:2*cy0-c.y1,c1x:c.c1x,c1y:2*cy0-c.c1y,c2x:c.c2x,c2y:2*cy0-c.c2y,x2:c.x2,y2:2*cy0-c.y2});
+    let src;
+    if(sym==="h"){ src=curves.filter(c=>mx(c)<=cx0); curves.length=0; curves.push(...src,...src.map(rx)); }
+    else if(sym==="v"){ src=curves.filter(c=>my(c)<=cy0); curves.length=0; curves.push(...src,...src.map(ry)); }
+    else { src=curves.filter(c=>mx(c)<=cx0&&my(c)<=cy0); curves.length=0; curves.push(...src,...src.map(rx),...src.map(ry),...src.map(c=>ry(rx(c)))); }
+  }
+
+  const d=curves.map(c=>`M${c.x1.toFixed(1)},${c.y1.toFixed(1)} C${c.c1x.toFixed(1)},${c.c1y.toFixed(1)} ${c.c2x.toFixed(1)},${c.c2y.toFixed(1)} ${c.x2.toFixed(1)},${c.y2.toFixed(1)}`).join(" ");
+  return {d,W,H};
+}
+function kolamSVG(seed,opt,stroke,swidth){
+  const k=kolamGen(seed,opt);
+  return `<svg viewBox="0 0 ${k.W} ${k.H.toFixed(1)}" xmlns="http://www.w3.org/2000/svg"><path d="${k.d}" fill="none" stroke="${stroke}" stroke-width="${swidth}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/* ------------ me: personal kolam mark ------------
+   Every faculty member is one mint of the long-form engine: their email seeds
+   a trait family (Sikku / Mandala / Labyrinth / Minimalist), grid and depth. */
+function renderMeKolam(){
+  const el=$("#meKolam"); if(!el||!me) return;
+  // identity is fixed for life — family/grid/depth seeded from email alone
+  const idTr=mulberry32(hashStr("katte-me-"+me.email+"-traits"));
+  const FAMS=[[1,2,4,8,1,1,1,1],[1,1,6,4,1,1,1,1],[0,8,1,0,3,3,3,3],[4,1,2,1,2,2,2,2]];
+  const wts=FAMS[Math.floor(idTr()*4)];
+  const grid=idTr()<.5?5:7;
+  const depth=idTr()>.4?1:2;
+  // the weave is a fresh mint of that same identity each day — and if today's
+  // doesn't sit right, a tap re-mints it (same family, new weave). Rare seeds
+  // collapse to an all-blank grid; skip past those so a tap never shows nothing.
+  const opt={cols:grid, rows:grid, W:240, margin:12, wts, symmetry:"4", maxDepth:depth, subdivide:.7, spatial:1.5};
+  const variant=+localStorage.getItem(userKey("kolamvar"))||0;
+  let v=variant, k;
+  for(let t=0;t<12;t++){
+    k=kolamGen("katte-me-"+me.email+"-"+todaySeed()+(v?"-v"+v:""), opt);
+    if(k.d) break;
+    v++;
+  }
+  if(v!==variant) localStorage.setItem(userKey("kolamvar"),v);
+  el.innerHTML=`<svg viewBox="0 0 ${k.W} ${k.H.toFixed(1)}" xmlns="http://www.w3.org/2000/svg"><path d="${k.d}" fill="none" stroke="#221c14" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function remintKolam(){
+  if(!me) return;
+  const v=(+localStorage.getItem(userKey("kolamvar"))||0)+1;
+  localStorage.setItem(userKey("kolamvar"),v);
+  renderMeKolam();
+  toast("Re-minted — same family, fresh weave");
+}
+function applyFilter(f){
+  filter=f;
+  $$("#filters .chip").forEach(c=>c.classList.toggle("on",c.dataset.f===f));
+  renderPeople();
+}
+
+/* ------------ availability settings (editable in the prototype) ------------ */
+const SET_DEFAULTS={office:"Tue & Fri, 2–4 pm", backup:"Meera Iyer", checkin:"Opt-in · On", quiet:"On"};
+const SET_TOGGLES={checkin:["Opt-in · On","Off"], quiet:["On","Off"]};
+let mySettings={};
+function loadSettings(){
+  mySettings=Object.assign({},SET_DEFAULTS,JSON.parse(localStorage.getItem(userKey("settings"))||"{}"));
+  renderSettings();
+}
+function renderSettings(){
+  $$("#v-me .setrow[data-set]").forEach(r=>{ r.querySelector(".val").textContent=mySettings[r.dataset.set]; });
+}
+function editSetting(row){
+  const key=row.dataset.set, val=row.querySelector(".val");
+  const label=row.querySelector("div").firstChild.textContent;
+  const opts=SET_TOGGLES[key];
+  if(opts){ // on/off settings just flip
+    mySettings[key]=mySettings[key]===opts[0]?opts[1]:opts[0];
+    localStorage.setItem(userKey("settings"),JSON.stringify(mySettings));
+    renderSettings();
+    toast(`<b>${label}</b> — now ${mySettings[key]}`);
+    return;
+  }
+  if(row.querySelector(".setedit")) return; // already editing
+  const inp=document.createElement("input");
+  inp.className="setedit"; inp.value=mySettings[key];
+  val.style.display="none"; val.after(inp);
+  inp.focus(); inp.select();
+  let closed=false;
+  const done=commit=>{
+    if(closed) return; closed=true;
+    if(commit && inp.value.trim()){
+      mySettings[key]=inp.value.trim();
+      localStorage.setItem(userKey("settings"),JSON.stringify(mySettings));
+      toast(`<b>${label}</b> updated — colleagues see this`);
+    }
+    inp.remove(); val.style.display=""; renderSettings();
+  };
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter") done(true); if(e.key==="Escape") done(false); });
+  inp.addEventListener("blur",()=>done(true));
+}
+/* Sign-in threshold: full-screen daily kolam that surrounds the content.
+   Text boxes are measured live and their cells clamped BLANK before the
+   collapse, so the solver itself makes space — no overlap, no cut lines. */
+function renderSigninKolam(){
+  const wrap=$("#signKolamBg"); if(!wrap) return;
+  const box=$("#signin").getBoundingClientRect();
+  if(box.width<10) return; // signed in — sign-in screen hidden
+  const W=Math.round(box.width);
+  const cols=Math.max(9, Math.round(W/46)), cell=W/cols, rows=Math.ceil(box.height/cell);
+  const tight=el=>{ const rg=document.createRange(); rg.selectNodeContents(el); const rr=rg.getBoundingClientRect(); return rr.width?rr:el.getBoundingClientRect(); };
+  const blocked=new Set();
+  [["#signin .hero .kn",tight],["#signin .hero h1",tight],
+   ["#signin .hero p.def",tight],[".signin-foot",el=>el.getBoundingClientRect()]]
+  .forEach(([sel,measure])=>{
+    const el=document.querySelector(sel); if(!el) return;
+    const r=measure(el), pad=8;
+    const c0=Math.floor((r.left-box.left-pad)/cell), c1=Math.floor((r.right-box.left+pad)/cell);
+    const r0=Math.floor((r.top-box.top-pad)/cell), r1=Math.floor((r.bottom-box.top+pad)/cell);
+    for(let R=r0;R<=r1;R++)for(let C=c0;C<=c1;C++) blocked.add(R+","+C);
+  });
+  const k=kolamGen("katte-hero"+todaySeed(),
+    {cols, rows, W, margin:0, wts:[1.3,2,4,5,1,1,1,1], symmetry:"none",
+     maxDepth:1, subdivide:.55, spatial:1.2, blockedCells:blocked});
+  wrap.innerHTML=`<svg width="${W}" height="${k.H.toFixed(0)}" viewBox="0 0 ${k.W} ${k.H.toFixed(1)}" xmlns="http://www.w3.org/2000/svg"><path class="signpath" pathLength="1000" d="${k.d}"/></svg>`;
+}
+
+/* ------------ channels (adda) ------------ */
+const allChannels = ()=>SEED_CHANNELS.concat(customChannels);
+const isDean = ()=>me && me.role==="Dean";
+const slugOf = n=>n.trim().toLowerCase().replace(/\s+/g,"-");
+const dmSeedKey = n=>"dm-"+slugOf(n);
+const dmStoreKey = n=>"dm@"+me.email+":"+slugOf(n); // your DMs are yours — other personas can't see them
+function dmThreads(){
+  const bySlug={};
+  Object.keys(SEED_MSGS).forEach(k=>{ if(k.startsWith("dm-")) bySlug[k.slice(3)]={seed:k}; });
+  const pre="dm@"+me.email+":";
+  Object.keys(extraMsgs).forEach(k=>{
+    if(k.startsWith(pre)){ const s=k.slice(pre.length); (bySlug[s]=bySlug[s]||{}).store=k; }
+  });
+  delete bySlug[slugOf(me.n)];
+  return Object.entries(bySlug).map(([slug,{seed,store}])=>{
+    const msgs=(seed?SEED_MSGS[seed]||[]:[]).concat(store?extraMsgs[store]||[]:[]);
+    if(!msgs.length) return null;
+    const p=PEOPLE.find(x=>slugOf(x.n)===slug) || {n:(msgs.find(m=>m.a!==me.n)||msgs[0]).a};
+    return {p, last:msgs[msgs.length-1], unreadKey:seed||""};
+  }).filter(Boolean);
+}
+function renderChannels(){
+  const openOnDesktop = isDesktop() && curChan;
+  const dms=dmThreads();
+  const dmHtml = `<h2 class="sec">Direct messages</h2>` + (dms.length
+    ? dms.map(d=>{
+        const unread = !readChans.has(d.unreadKey) && SEED_DM_UNREAD[d.unreadKey] ? `<span class="unread">${SEED_DM_UNREAD[d.unreadKey]}</span>` : "";
+        const preview = (d.last.a===me.n?"You: ":"")+d.last.t;
+        const open = openOnDesktop && curChan.id===dmStoreKey(d.p.n) ? " open" : "";
+        return `<button class="chanrow${open}" data-dm="${d.p.n}">
+          <span class="ce dmava" style="background:${d.p.c||colorFor(d.p.n)}">${initials(d.p.n)}${d.p.s?`<span class="st" style="background:${STATUS[d.p.s].hex}"></span>`:""}</span>
+          <span class="cm"><span class="cn"><span class="cntext">${d.p.n}</span></span><span class="cd">${preview}</span></span>${unread}
+        </button>`;
+      }).join("")
+    : `<p style="color:var(--ink-faint);font-size:12.5px;font-style:italic;padding:2px 4px 6px">No conversations yet — find someone in the People tab and tap <b>Message</b>.</p>`);
+  const groups = {"Official":[], "Community":[], "Private":[]};
+  allChannels().forEach(c=>groups[c.cat||"Community"].push(c));
+  $("#chanList").innerHTML = dmHtml + Object.entries(groups).filter(([,l])=>l.length).map(([g,list])=>
+    `<h2 class="sec">${g}</h2>` + list.map(c=>{
+      const unread = !readChans.has(c.id) && c.unread ? `<span class="unread">${c.unread}</span>` : "";
+      const open = openOnDesktop && curChan.id===c.id ? " open" : "";
+      return `<button class="chanrow${open}" data-chan="${c.id}">
+        <span class="ce">${icon(c.emoji)}</span>
+        <span class="cm">
+          <span class="cn"><span class="cntext">${c.name}</span>${c.private?`<span class="lk">${icon("lock")}</span>`:""}</span>
+          <span class="cd">${c.desc}</span>
+        </span>${unread}
+      </button>`;
+    }).join("")
+  ).join("");
+}
+function msgHtml(m, pinned){
+  return `<div class="msg${pinned?" pin":""}">
+    <span class="ma" style="background:${colorFor(m.a)}">${initials(m.a)}</span>
+    <div class="mb">
+      <div class="mh"><b>${m.a}</b>${m.role?`<span class="rolechip">${m.role}</span>`:""}${m.w}</div>
+      <div class="mt">${m.t}</div>
+    </div>
+  </div>`;
+}
+function renderMsgs(){
+  const c=curChan;
+  const msgs=(SEED_MSGS[c.seedId||c.id]||[]).concat(extraMsgs[c.id]||[]);
+  $("#msgList").innerHTML = msgs.map(m=>msgHtml(m, !!c.locked)).join("") ||
+    (c.member!==false ? `<p style="color:var(--ink-faint);text-align:center;padding:26px 0;font-style:italic">Quiet here. Say something.</p>` : "");
+}
+function openChannel(id){
+  const c=allChannels().find(x=>x.id===id); if(!c) return;
+  curChan=c; readChans.add(id);
+  localStorage.setItem(userKey("lastchan"),id);
+  const ce=$("#chEmoji");
+  ce.className="ce"; ce.style.background=""; ce.innerHTML=icon(c.emoji);
+  $("#msgIn").placeholder="Message…";
+  $("#chName").textContent=c.name;
+  $("#chMeta").textContent=`${c.members} member${c.members===1?"":"s"} · ${c.private?"Private":"Public"}${c.locked?" · read-only":""}`;
+  const noAccess = c.private && c.member===false;
+  $("#joinWall").style.display = noAccess ? "block" : "none";
+  $("#msgList").style.display = noAccess ? "none" : "block";
+  const mayPost = !noAccess && (!c.locked || isDean());
+  $("#composer").style.display = mayPost ? "flex" : "none";
+  $("#lockedBar").style.display = (!mayPost && !noAccess) ? "block" : "none";
+  if(!noAccess) renderMsgs();
+  const desktop=isDesktop();
+  $$(".view").forEach(x=>{ if(desktop && x.id==="v-adda") return; x.classList.remove("active"); });
+  $("#v-channel").classList.add("active");
+  if(desktop){
+    $("#v-adda").classList.add("active");
+    $$("nav.tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v==="adda"));
+  }
+  window.scrollTo({top:0});
+  renderChannels(); // clear unread badge
+}
+function sendMsg(){
+  const t=$("#msgIn").value.trim();
+  if(!t){ $("#msgIn").focus(); return; }
+  const m={a:me.n, role:isDean()?"Dean":null, t, w:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})};
+  (extraMsgs[curChan.id]=extraMsgs[curChan.id]||[]).push(m);
+  localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
+  $("#msgIn").value="";
+  renderMsgs();
+  renderChannels(); // keep DM previews fresh
+  scrollThread();
+  if(curChan.bot) askBot(t);
+}
+function scrollThread(){
+  const l=$("#msgList"); l.scrollTop=l.scrollHeight;           // desktop pane
+  window.scrollTo({top:document.body.scrollHeight});            // mobile page
+}
+
+/* ------------ Gubbi — local Ollama+RAG service (see bot/README.md) ------------
+   The API address travels in the demo link: ?botapi=https://xxx.trycloudflare.com
+   sticks it in localStorage, so one shared link wires up every phone. */
+const botApi = ()=> (localStorage.getItem("katte-botapi")||"http://localhost:8787").replace(/\/+$/,"");
+async function askBot(q){
+  const chanId=curChan.id;
+  const typing=document.createElement("div");
+  typing.className="msg";
+  typing.innerHTML=`<span class="ma" style="background:${colorFor("Gubbi")}">G</span>
+    <div class="mb"><div class="mh"><b>Gubbi</b><span class="rolechip">Bot</span></div>
+    <div class="mt" style="color:var(--ink-faint);font-style:italic">reading the circulars…</div></div>`;
+  $("#msgList").appendChild(typing);
+  scrollThread();
+  let m;
+  try{
+    const r=await fetch(botApi()+"/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({q})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||r.status);
+    const src=d.sources&&d.sources.length?` <span style="color:var(--ink-faint);font-size:11px">· ${d.sources[0]}</span>`:"";
+    m={a:"Gubbi", role:"Bot", t:d.answer+src, w:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})};
+  }catch(e){
+    m={a:"Gubbi", role:"Bot", t:"I'm not reachable right now — in the pilot I live on a machine at the office. Ask again once it's back up, or contact the admin desk directly.", w:"now"};
+  }
+  typing.remove();
+  (extraMsgs[chanId]=extraMsgs[chanId]||[]).push(m);
+  localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
+  if(curChan && curChan.id===chanId){ renderMsgs(); scrollThread(); }
+  renderChannels();
+}
+function openDM(name){
+  const p=PEOPLE.find(x=>x.n===name) || {n:name, c:colorFor(name), s:null, note:null};
+  curChan={id:dmStoreKey(p.n), seedId:dmSeedKey(p.n), dm:true, name:p.n};
+  readChans.add(curChan.id); readChans.add(curChan.seedId);
+  localStorage.setItem(userKey("lastchan"),"dm:"+p.n);
+  const ce=$("#chEmoji");
+  ce.className="ce dmava";
+  ce.style.background=p.c||colorFor(p.n);
+  ce.innerHTML=initials(p.n)+(p.s?`<span class="st" style="background:${STATUS[p.s].hex}"></span>`:"");
+  $("#chName").textContent=p.n;
+  $("#chMeta").textContent = p.s ? STATUS[p.s].label+(p.note?` — ${p.note}`:"") : "Direct message · private to you two";
+  $("#joinWall").style.display="none";
+  $("#msgList").style.display="block";
+  $("#composer").style.display="flex";
+  $("#lockedBar").style.display="none";
+  $("#msgIn").placeholder=`Message ${p.n.split(" ")[0]}…`;
+  renderMsgs();
+  const desktop=isDesktop();
+  $$(".view").forEach(x=>{ if(desktop && x.id==="v-adda") return; x.classList.remove("active"); });
+  $("#v-channel").classList.add("active");
+  if(desktop){
+    $("#v-adda").classList.add("active");
+    $$("nav.tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v==="adda"));
+  }
+  window.scrollTo({top:0});
+  renderChannels();
+}
+function openChanSheet(){
+  $("#emojiRow").innerHTML=CHAN_EMOJI.map(e=>
+    `<button class="chip ${e===newChanEmoji?"on":""}" data-emoji="${e}" style="font-size:16px;padding:9px 12px">${icon(e)}</button>`).join("");
+  $("#chanSheetWrap").classList.add("open");
+  $("#chanNameIn").focus();
+}
+function createChannel(){
+  const name=$("#chanNameIn").value.trim();
+  if(!name){ $("#chanNameIn").focus(); toast("Give the channel a name"); return; }
+  const priv=newChanPriv==="private";
+  const c={id:"c"+Date.now(), emoji:newChanEmoji, name, private:priv, member:true, mine:true,
+    members:1, unread:0, cat:priv?"Private":"Community",
+    desc:priv?`Private · started by ${me.n.split(" ")[0]}`:`Open to everyone · started by ${me.n.split(" ")[0]}`};
+  customChannels.push(c);
+  localStorage.setItem("katte-channels",JSON.stringify(customChannels));
+  extraMsgs[c.id]=[{a:me.n, role:isDean()?"Dean":null, t:"started this channel — welcome in 🌱", w:"now"}];
+  localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
+  $("#chanNameIn").value="";
+  $("#chanSheetWrap").classList.remove("open");
+  renderChannels();
+  openChannel(c.id);
+  toast(priv?`<b>${name}</b> created — private, invite from the channel page`:`<b>${name}</b> is live for everyone at Srishti`);
+}
+
+/* ------------ wiring (no inline handlers — works under strict CSP) ------------ */
+$("#signinBtn").addEventListener("click",openPicker);
+$("#scrim").addEventListener("click",closePicker);
+$("#customGo").addEventListener("click",customEnter);
+$("#customName").addEventListener("keydown",e=>{ if(e.key==="Enter") customEnter(); });
+$("#signoutBtn").addEventListener("click",signOut);
+$$("#v-me .setrow[data-set] .editbtn").forEach(b=>b.addEventListener("click",()=>editSetting(b.closest(".setrow"))));
+$("#meKolam").addEventListener("click",remintKolam);
+$("#logBtn").addEventListener("click",logWork);
+$("#statusNote").addEventListener("change",()=>toast("Note shared with your school group"));
+window.addEventListener("resize",()=>{ clearTimeout(window._skT); window._skT=setTimeout(renderSigninKolam,150); });
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(renderSigninKolam);
+$$(".scard").forEach(c=>c.addEventListener("click",()=>setStatus(c.dataset.s)));
+$$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.v,b)));
+$$("#filters .chip").forEach(b=>b.addEventListener("click",()=>applyFilter(b.dataset.f)));
+$("#newChanBtn").addEventListener("click",openChanSheet);
+$("#chanScrim").addEventListener("click",()=>$("#chanSheetWrap").classList.remove("open"));
+$("#createChanBtn").addEventListener("click",createChannel);
+$("#chanNameIn").addEventListener("keydown",e=>{ if(e.key==="Enter") createChannel(); });
+$("#backToAdda").addEventListener("click",()=>{
+  $$(".view").forEach(x=>x.classList.remove("active"));
+  $("#v-adda").classList.add("active");
+});
+$("#sendBtn").addEventListener("click",sendMsg);
+$("#msgIn").addEventListener("keydown",e=>{ if(e.key==="Enter") sendMsg(); });
+$$("#privRow .chip").forEach(b=>b.addEventListener("click",()=>{
+  newChanPriv=b.dataset.priv;
+  $$("#privRow .chip").forEach(c=>c.classList.remove("on"));
+  b.classList.add("on");
+}));
+/* delegated: buttons rendered inside person cards, channel rows, emoji picker */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-toast]");
+  if(t){ toast(t.dataset.toast); return; }
+  const ch=e.target.closest("[data-chan]");
+  if(ch){ openChannel(ch.dataset.chan); return; }
+  const dm=e.target.closest("[data-dm]");
+  if(dm){ openDM(dm.dataset.dm); return; }
+  const em=e.target.closest("[data-emoji]");
+  if(em){
+    newChanEmoji=em.dataset.emoji;
+    $$("#emojiRow .chip").forEach(c=>c.classList.toggle("on",c.dataset.emoji===newChanEmoji));
+  }
+});
+
+/* ------------ init ------------ */
+const bp=new URLSearchParams(location.search).get("botapi");
+if(bp) localStorage.setItem("katte-botapi",bp); // demo link wires the bot address
+$("#today-date").textContent = new Date().toLocaleDateString("en-IN",{weekday:"long", day:"numeric", month:"long"});
+renderSigninKolam();
+const saved = localStorage.getItem("katte-user");
+if(saved){
+  enterApp(JSON.parse(saved), true);
+  toast(`Welcome back, <b>${me.n.split(" ")[0]}</b>`);
+}
+
+/* ------------ PWA: register service worker (installable + offline) ------------ */
+if("serviceWorker" in navigator){
+  addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>

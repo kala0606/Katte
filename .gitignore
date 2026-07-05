@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+
+# Bot: generated + scraped data (regenerate with scrape.py + ingest.py).
+# Keeps the public repo clean and free of scraped/real admin content.
+bot/index.json
+bot/docs/web-*.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
