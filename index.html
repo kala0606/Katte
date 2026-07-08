@@ -570,7 +570,10 @@ footer.foot{display:none}
   }
   #addaWrap .view{animation:none}
   #addaWrap .view.active{display:flex;flex-direction:column}
-  #v-adda.active{border-right:1px solid var(--line);padding:6px 12px 14px;overflow-y:auto;background:var(--paper)}
+  /* on desktop the channel rail is always visible whenever a thread is open,
+     regardless of the .active class race on #v-adda */
+  #addaWrap:has(#v-channel.active) #v-adda{display:flex;flex-direction:column}
+  #addaWrap:has(.view.active) #v-adda{border-right:1px solid var(--line);padding:6px 12px 14px;overflow-y:auto;background:var(--paper)}
   #v-adda h2.sec{
     font-family:var(--body);font-size:11px;font-style:normal;font-weight:700;
     letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
@@ -707,20 +710,20 @@ footer.foot{display:none}
     </div>
   </section>
 
-  <!-- ============ ACCOUNT PICKER (prototype mode) ============ -->
+  <!-- ============ SIGN IN SHEET ============ -->
   <div id="sheetWrap" class="sheetwrap">
     <div class="scrim" id="scrim"></div>
     <div class="sheet">
       <div class="grab"></div>
-      <h4>Choose an account</h4>
-      <p class="sub">Prototype mode · no password needed — pick who you want to test as.</p>
-      <div id="acctList"></div>
-      <div class="or">or someone else</div>
-      <div class="customrow">
-        <input id="customName" placeholder="Your name — e.g. Priya Nair" autocomplete="off">
-        <button id="customGo">Enter</button>
-      </div>
-      <p class="fine">Everything stays on this device. Real version: Google sign-in locked to srishti.ac.in.</p>
+      <h4>Sign in to Katte</h4>
+      <p class="sub">Use your Srishti email. Your password is your <b>first name</b> (lowercase), as shared with you.</p>
+      <label class="flabel">Email</label>
+      <input class="finput" id="loginEmail" type="email" inputmode="email" autocomplete="username" placeholder="you@srishti.ac.in">
+      <label class="flabel">Password</label>
+      <input class="finput" id="loginPass" type="password" autocomplete="current-password" placeholder="your first name">
+      <button class="createbtn" id="loginBtn">Enter</button>
+      <p class="fine" id="loginErr" style="min-height:14px;color:var(--terracotta)"></p>
+      <p class="fine">Not on the test list yet? Ask the organiser to add your email.</p>
     </div>
   </div>
 
@@ -893,7 +896,19 @@ footer.foot{display:none}
         <div class="setrow" data-set="backup"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><circle cx="9" cy="9" r="4"/><circle cx="15" cy="15" r="4"/></svg></span><div>My backup<small>Who to ask when you're away</small></div><span class="val"></span><button class="editbtn" aria-label="Edit backup"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
         <div class="setrow" data-set="checkin"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 1 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span><div>Campus check-in<small>Opt-in, on-campus only, never tracks location off it</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle campus check-in"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
         <div class="setrow" data-set="quiet"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.6 2.5H4.4z"/><path d="M9.7 20.5a2.4 2.4 0 0 0 4.6 0"/></svg></span><div>Quiet hours<small>No pings during studio practice</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle quiet hours"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
-        <button class="setrow" id="signoutBtn"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M9 4H5.5a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 5.5 20H9M14 16l4-4-4-4M18 12H9"/></svg></span><div>Sign out<small>Switch to a different test account</small></div><span class="val">→</span></button>
+        <div id="adminBox" style="display:none">
+          <h2 class="sec">Invite a tester</h2>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin:-6px 0 12px">Add someone to the pilot. Tell them: log in with this email, password is their first name (lowercase).</p>
+          <label class="flabel">Their Srishti email</label>
+          <input class="finput" id="invEmail" type="email" placeholder="firstname.lastname@srishti.ac.in" autocomplete="off">
+          <label class="flabel">Their name</label>
+          <input class="finput" id="invName" placeholder="e.g. Priya Nair" autocomplete="off">
+          <label class="flabel">Their school / role</label>
+          <input class="finput" id="invRole" placeholder="e.g. Visual Communication" autocomplete="off">
+          <button class="createbtn" id="invBtn">Add to the test group</button>
+          <button class="setrow" id="copyInviteBtn" style="margin-top:10px"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></span><div>Copy invite message<small>Ready to paste into WhatsApp or email</small></div><span class="val">Copy</span></button>
+        </div>
+        <button class="setrow" id="signoutBtn"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M9 4H5.5a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 5.5 20H9M14 16l4-4-4-4M18 12H9"/></svg></span><div>Sign out<small>Leave the test account</small></div><span class="val">→</span></button>
       </section>
     </main>
 
@@ -913,7 +928,28 @@ footer.foot{display:none}
   <div id="toast"></div>
 </div>
 
+<!-- Firebase (compat build — no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+/* ------------ Firebase: shared backend for the pilot ------------ */
+const firebaseConfig = {
+  apiKey: "AIzaSyCwJi0zaDi_0qp1Jrfvh1cgvt4NS3Bqat4",
+  authDomain: "katte-d9efb.firebaseapp.com",
+  projectId: "katte-d9efb",
+  storageBucket: "katte-d9efb.firebasestorage.app",
+  messagingSenderId: "625706959595",
+  appId: "1:625706959595:web:3c9e5e5f7fa6b4c59a74ae"
+};
+let auth=null, db=null, FB_OK=false;
+try{
+  firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth(); db=firebase.firestore();
+  FB_OK=true;
+}catch(e){ console.warn("Firebase unavailable (offline?)", e); }
+const svTime = ()=>firebase.firestore.FieldValue.serverTimestamp();
+
 /* ------------ data ------------ */
 const STATUS = {
   campus:{label:"On campus", hex:"#3c7a45"},
@@ -1055,52 +1091,112 @@ const ICONS={
 };
 function icon(name,cls){ return `<svg class="fi${cls?" "+cls:""}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||""}</svg>`; }
 
-/* ------------ auth (prototype: passwordless) ------------ */
-function openPicker(){
-  $("#acctList").innerHTML = TEST_ACCOUNTS.map((a,i)=>`
-    <button class="acct" data-i="${i}">
-      <span class="aa" style="background:${colorFor(a.n)}">${initials(a.n)}</span>
-      <span><span class="nm">${a.n}</span><br><span class="em">${emailFor(a.n)} · ${a.role}</span></span>
-    </button>`).join("");
-  $("#sheetWrap").classList.add("open");
-  $$("#acctList .acct").forEach(b=>b.addEventListener("click",()=>{
-    const a=TEST_ACCOUNTS[+b.dataset.i];
-    enterApp({n:a.n, email:emailFor(a.n), role:a.role});
-  }));
-}
+/* ------------ auth (Firebase email + password, invite-gated) ------------ */
+let people=[];              // live faculty directory from Firestore
+let unsubs=[];             // active realtime listeners to tear down on sign-out
+function openPicker(){ $("#loginErr").textContent=""; $("#sheetWrap").classList.add("open"); $("#loginEmail").focus(); }
 function closePicker(){ $("#sheetWrap").classList.remove("open"); }
-function customEnter(){
-  const name=$("#customName").value.trim();
-  if(!name){ $("#customName").focus(); toast("Type a name first"); return; }
-  enterApp({n:name, email:emailFor(name), role:"Faculty"});
+// Firebase needs >=6 char passwords; pad the first name invisibly & consistently.
+const authPassword = typed => typed.trim().toLowerCase() + "@katte";
+async function doLogin(){
+  if(!FB_OK){ $("#loginErr").textContent="No connection — try again on network."; return; }
+  const email=$("#loginEmail").value.trim().toLowerCase();
+  const typed=$("#loginPass").value;
+  if(!email || !typed){ $("#loginErr").textContent="Enter your email and password."; return; }
+  $("#loginErr").textContent="Signing in…";
+  const pass=authPassword(typed);
+  const btn=$("#loginBtn"); btn.disabled=true;
+  try{
+    try{ await auth.signInWithEmailAndPassword(email,pass); }
+    catch(e){
+      // first time here? create the account (rules still require an invite)
+      if(e.code==="auth/user-not-found" || e.code==="auth/invalid-credential"){
+        try{ await auth.createUserWithEmailAndPassword(email,pass); }
+        catch(e2){
+          if(e2.code==="auth/email-already-in-use") throw {code:"wrong-pass"};
+          throw e2;
+        }
+      } else throw e;
+    }
+    // success → onAuthStateChanged takes over
+  }catch(e){
+    btn.disabled=false;
+    $("#loginErr").textContent =
+      e.code==="wrong-pass" ? "Wrong password. It's your first name, lowercase." :
+      e.code==="auth/invalid-email" ? "That doesn't look like an email." :
+      "Couldn't sign in. Check with the organiser that you're on the list.";
+  }
 }
-function enterApp(user, silent){
-  me=user;
-  localStorage.setItem("katte-user", JSON.stringify(me));
+// central session handler
+if(FB_OK) auth.onAuthStateChanged(async user=>{
+  if(!user){ showSignin(); return; }
+  try{
+    const ref=db.collection("profiles").doc(user.uid);
+    let snap=await ref.get();
+    if(!snap.exists){
+      const inv=await db.collection("invites").doc(user.email).get();
+      if(!inv.exists){
+        $("#loginErr").textContent="You're not on the test list yet. Ask the organiser to add your email.";
+        await auth.signOut(); $("#loginBtn").disabled=false; return;
+      }
+      const d=inv.data();
+      await ref.set({email:user.email, name:d.name, role:d.role||"Faculty", isAdmin:!!d.isAdmin,
+        status:"campus", statusNote:"", statusUpdatedAt:svTime()});
+      snap=await ref.get();
+    }
+    const p=snap.data();
+    me={uid:user.uid, email:user.email, n:p.name, role:p.role||"Faculty", isAdmin:!!p.isAdmin};
+    myStatus=p.status||"campus";
+    enterApp(p);
+  }catch(err){ console.error(err); $("#loginErr").textContent="Something went wrong signing in."; $("#loginBtn").disabled=false; }
+});
+function enterApp(profile){
   ledger = JSON.parse(localStorage.getItem(userKey("ledger"))||"null") || SEED_LEDGER.slice();
-  myStatus = localStorage.getItem(userKey("status")) || "campus";
   closePicker();
+  $("#loginBtn").disabled=false;
   $("#signin").style.display="none";
   $("#app").classList.add("show");
-  // identity everywhere
   const top=$("#topAvatar");
   top.textContent=initials(me.n); top.style.background=colorFor(me.n);
   $("#meName").textContent=me.n;
   $("#meEmail").textContent=(me.role||"Faculty")+" · "+me.email;
+  $("#adminBox").style.display = me.isAdmin ? "block" : "none";
   $$(".scard").forEach(c=>c.classList.toggle("sel",c.dataset.s===myStatus));
-  renderPeople(); renderCats(); renderPie(); renderChannels(); renderMeKolam(); loadSettings();
-  if(!silent) toast(isDean()
-    ? `Signed in as <b>${me.email}</b> — you can post in Announcements`
-    : `Signed in as <b>${me.email}</b>`);
+  $("#statusNote").value = profile.statusNote||"";
+  renderCats(); renderPie(); renderMeKolam(); loadSettings();
+  startListeners();
+  toast(`Signed in as <b>${me.n.split(" ")[0]}</b>`);
 }
-function signOut(){
-  localStorage.removeItem("katte-user");
+function startListeners(){
+  stopListeners();
+  // live directory → People + Today
+  unsubs.push(db.collection("profiles").onSnapshot(s=>{
+    people = s.docs.map(d=>{const p=d.data(); return {uid:d.id, n:p.name, r:p.role||"Faculty",
+      s:p.status||"campus", note:p.statusNote||"", email:p.email, c:colorFor(p.name||"?")};});
+    renderPeople();
+    if(curChan && curChan.dm) refreshDMHeader();
+  }, err=>console.warn("profiles listener", err)));
+  // all my direct messages (one stream powers both the DM list and open threads)
+  unsubs.push(db.collection("dms").where("participants","array-contains",me.email).onSnapshot(s=>{
+    allDMs=s.docs.map(d=>d.data());
+    const byOther={};
+    allDMs.forEach(m=>{const other=(m.participants||[]).find(e=>e!==me.email); if(!other) return;
+      const t=m.createdAt&&m.createdAt.toMillis?m.createdAt.toMillis():0;
+      if(!byOther[other]||t>=byOther[other]._t) byOther[other]={email:other, last:m.body, mine:m.authorId===me.uid, _t:t};});
+    dmThreadsData=Object.values(byOther).sort((a,b)=>b._t-a._t);
+    renderChannels();
+    if(curChan && curChan.dm){ renderMsgs(); }
+  }, err=>console.warn("dm listener", err)));
+}
+function stopListeners(){ unsubs.forEach(u=>{try{u();}catch(e){}}); unsubs=[]; if(msgUnsub){try{msgUnsub();}catch(e){} msgUnsub=null;} }
+function showSignin(){
+  me=null; stopListeners();
   $("#app").classList.remove("show");
   $("#signin").style.display="flex";
-  $("#customName").value="";
-  renderSigninKolam(); // re-measure text boxes now that the screen is visible
-  toast("Signed out");
+  $("#loginPass").value=""; $("#loginBtn").disabled=false;
+  renderSigninKolam();
 }
+function signOut(){ if(FB_OK) auth.signOut(); toast("Signed out"); }
 
 /* ------------ nav ------------ */
 function go(v,btn){
@@ -1113,45 +1209,55 @@ function go(v,btn){
   $$("nav.tabs button").forEach(b=>b.classList.remove("on"));
   btn.classList.add("on");
   window.scrollTo({top:0});
-  if(v==="adda" && desktop && !curChan){
-    // reopen where you left off; Announcements for first-timers
-    const last=localStorage.getItem(userKey("lastchan"));
-    if(last && last.startsWith("dm:")) openDM(last.slice(3));
-    else if(last && allChannels().some(c=>c.id===last)) openChannel(last);
-    else openChannel(allChannels().some(c=>c.id==="announce") ? "announce" : allChannels()[0].id);
+  if(v==="adda" && desktop){
+    if(curChan){ $("#v-channel").classList.add("active"); } // keep the open thread visible
+    else{
+      // reopen where you left off; Announcements for first-timers
+      const last=localStorage.getItem(userKey("lastchan"));
+      if(last && last.startsWith("dm:")) openDM(last.slice(3));
+      else if(last && allChannels().some(c=>c.id===last)) openChannel(last);
+      else openChannel(allChannels().some(c=>c.id==="announce")?"announce":allChannels()[0].id);
+    }
   }
 }
 
 /* ------------ status ------------ */
 function setStatus(s){
-  myStatus=s; localStorage.setItem(userKey("status"),s);
+  myStatus=s;
   $$(".scard").forEach(c=>c.classList.toggle("sel",c.dataset.s===s));
+  if(me&&db) db.collection("profiles").doc(me.uid).update({status:s, statusUpdatedAt:svTime()});
   toast(`You're marked <b>${STATUS[s].label}</b> — colleagues can see this`);
+}
+function setStatusNote(){
+  const note=$("#statusNote").value.trim();
+  if(me&&db) db.collection("profiles").doc(me.uid).update({statusNote:note});
+  toast("Note shared — colleagues can see it");
 }
 
 /* ------------ people ------------ */
 function personCard(p){
-  const st=STATUS[p.s];
+  const st=STATUS[p.s]||STATUS.campus;
   const acts = (p.s==="campus"||p.s==="online"
     ? `<button class="mini solid" data-toast="Slot requested with <b>${p.n}</b> — you&#39;ll get a calendar invite">Book slot</button>` : "")
-    + `<button class="mini" data-dm="${p.n}">Message</button>`;
+    + `<button class="mini" data-dm="${p.email}" data-dmname="${p.n}">Message</button>`;
   return `<div class="pcard">
     <div class="pa" style="background:${p.c}">${initials(p.n)}<span class="st" style="background:${st.hex}"></span></div>
     <div class="meta">
       <div class="nm">${p.n}</div>
       <div class="role">${p.r}</div>
       <div class="now"><span class="d" style="background:${st.hex}"></span>${st.label}${p.note?` — <span style="color:var(--ink-soft)">${p.note}</span>`:""}</div>
-      ${p.backup?`<div class="backup">Away? Ask <b>${p.backup}</b> instead</div>`:""}
     </div>
     <div class="act">${acts}</div>
   </div>`;
 }
 function renderPeople(){
-  const others = PEOPLE.filter(p=>p.n!==(me&&me.n));
+  const others = people.filter(p=>!me || p.uid!==me.uid);
   const list = others.filter(p=>filter==="all"||p.s===filter);
   $("#peopleList").innerHTML = list.length? list.map(personCard).join("") :
-    `<p style="color:var(--ink-faint);text-align:center;padding:30px 0;font-style:italic">Nobody here right now.</p>`;
-  $("#aroundList").innerHTML = others.filter(p=>p.s==="campus"||p.s==="online").slice(0,4).map(personCard).join("");
+    `<p style="color:var(--ink-faint);text-align:center;padding:30px 0;font-style:italic">${others.length?"Nobody matches that filter.":"You're the first one here — invite colleagues from the Me tab."}</p>`;
+  const around = others.filter(p=>p.s==="campus"||p.s==="online").slice(0,6);
+  $("#aroundList").innerHTML = around.length? around.map(personCard).join("") :
+    `<p style="color:var(--ink-faint);padding:16px 2px;font-style:italic">Nobody's marked as around just yet.</p>`;
 }
 
 /* ------------ work pie ------------ */
@@ -1465,35 +1571,26 @@ function renderSigninKolam(){
 /* ------------ channels (adda) ------------ */
 const allChannels = ()=>SEED_CHANNELS.concat(customChannels);
 const isDean = ()=>me && me.role==="Dean";
-const slugOf = n=>n.trim().toLowerCase().replace(/\s+/g,"-");
-const dmSeedKey = n=>"dm-"+slugOf(n);
-const dmStoreKey = n=>"dm@"+me.email+":"+slugOf(n); // your DMs are yours — other personas can't see them
-function dmThreads(){
-  const bySlug={};
-  Object.keys(SEED_MSGS).forEach(k=>{ if(k.startsWith("dm-")) bySlug[k.slice(3)]={seed:k}; });
-  const pre="dm@"+me.email+":";
-  Object.keys(extraMsgs).forEach(k=>{
-    if(k.startsWith(pre)){ const s=k.slice(pre.length); (bySlug[s]=bySlug[s]||{}).store=k; }
-  });
-  delete bySlug[slugOf(me.n)];
-  return Object.entries(bySlug).map(([slug,{seed,store}])=>{
-    const msgs=(seed?SEED_MSGS[seed]||[]:[]).concat(store?extraMsgs[store]||[]:[]);
-    if(!msgs.length) return null;
-    const p=PEOPLE.find(x=>slugOf(x.n)===slug) || {n:(msgs.find(m=>m.a!==me.n)||msgs[0]).a};
-    return {p, last:msgs[msgs.length-1], unreadKey:seed||""};
-  }).filter(Boolean);
+const canPostLocked = ()=> isDean() || (me&&me.isAdmin);
+const escapeHtml = s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dmIdFor = email => "dm:"+[me.email,email].sort().join("|");
+let dmThreadsData=[], liveMsgs=[], allDMs=[], msgUnsub=null;
+function fmtTime(ts){
+  if(!ts||!ts.toMillis) return "now";
+  const d=new Date(ts.toMillis()), now=new Date();
+  const t=d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+  return d.toDateString()===now.toDateString() ? t : d.toLocaleDateString("en-IN",{weekday:"short"})+" "+t;
 }
 function renderChannels(){
   const openOnDesktop = isDesktop() && curChan;
-  const dms=dmThreads();
-  const dmHtml = `<h2 class="sec">Direct messages</h2>` + (dms.length
-    ? dms.map(d=>{
-        const unread = !readChans.has(d.unreadKey) && SEED_DM_UNREAD[d.unreadKey] ? `<span class="unread">${SEED_DM_UNREAD[d.unreadKey]}</span>` : "";
-        const preview = (d.last.a===me.n?"You: ":"")+d.last.t;
-        const open = openOnDesktop && curChan.id===dmStoreKey(d.p.n) ? " open" : "";
-        return `<button class="chanrow${open}" data-dm="${d.p.n}">
-          <span class="ce dmava" style="background:${d.p.c||colorFor(d.p.n)}">${initials(d.p.n)}${d.p.s?`<span class="st" style="background:${STATUS[d.p.s].hex}"></span>`:""}</span>
-          <span class="cm"><span class="cn"><span class="cntext">${d.p.n}</span></span><span class="cd">${preview}</span></span>${unread}
+  const dmHtml = `<h2 class="sec">Direct messages</h2>` + (dmThreadsData.length
+    ? dmThreadsData.map(d=>{
+        const p=people.find(x=>x.email===d.email)||{n:d.email, email:d.email, s:null, c:colorFor(d.email)};
+        const preview=(d.mine?"You: ":"")+d.last;
+        const open = openOnDesktop && curChan.id===dmIdFor(d.email) ? " open" : "";
+        return `<button class="chanrow${open}" data-dm="${p.email}" data-dmname="${escapeHtml(p.n)}">
+          <span class="ce dmava" style="background:${p.c}">${initials(p.n)}${p.s?`<span class="st" style="background:${(STATUS[p.s]||STATUS.campus).hex}"></span>`:""}</span>
+          <span class="cm"><span class="cn"><span class="cntext">${escapeHtml(p.n)}</span></span><span class="cd">${escapeHtml(preview)}</span></span>
         </button>`;
       }).join("")
     : `<p style="color:var(--ink-faint);font-size:12.5px;font-style:italic;padding:2px 4px 6px">No conversations yet — find someone in the People tab and tap <b>Message</b>.</p>`);
@@ -1501,14 +1598,13 @@ function renderChannels(){
   allChannels().forEach(c=>groups[c.cat||"Community"].push(c));
   $("#chanList").innerHTML = dmHtml + Object.entries(groups).filter(([,l])=>l.length).map(([g,list])=>
     `<h2 class="sec">${g}</h2>` + list.map(c=>{
-      const unread = !readChans.has(c.id) && c.unread ? `<span class="unread">${c.unread}</span>` : "";
       const open = openOnDesktop && curChan.id===c.id ? " open" : "";
       return `<button class="chanrow${open}" data-chan="${c.id}">
         <span class="ce">${icon(c.emoji)}</span>
         <span class="cm">
           <span class="cn"><span class="cntext">${c.name}</span>${c.private?`<span class="lk">${icon("lock")}</span>`:""}</span>
           <span class="cd">${c.desc}</span>
-        </span>${unread}
+        </span>
       </button>`;
     }).join("")
   ).join("");
@@ -1517,16 +1613,44 @@ function msgHtml(m, pinned){
   return `<div class="msg${pinned?" pin":""}">
     <span class="ma" style="background:${colorFor(m.a)}">${initials(m.a)}</span>
     <div class="mb">
-      <div class="mh"><b>${m.a}</b>${m.role?`<span class="rolechip">${m.role}</span>`:""}${m.w}</div>
+      <div class="mh"><b>${escapeHtml(m.a)}</b>${m.role?`<span class="rolechip">${escapeHtml(m.role)}</span>`:""}${m.w}</div>
       <div class="mt">${m.t}</div>
     </div>
   </div>`;
 }
 function renderMsgs(){
-  const c=curChan;
-  const msgs=(SEED_MSGS[c.seedId||c.id]||[]).concat(extraMsgs[c.id]||[]);
+  const c=curChan; if(!c) return;
+  let msgs;
+  if(c.bot){ // Gubbi stays on-device (its answers come from the local tunnel)
+    msgs=(SEED_MSGS[c.id]||[]).concat(extraMsgs[c.id]||[]);
+  }else if(c.dm){
+    msgs=allDMs.filter(m=>m.channelId===c.id)
+      .sort((a,b)=>((a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0)-(b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0)))
+      .map(m=>({a:m.authorName, role:m.role, t:escapeHtml(m.body), w:fmtTime(m.createdAt)}));
+  }else{
+    msgs=liveMsgs.map(m=>({a:m.authorName, role:m.role, t:escapeHtml(m.body), w:fmtTime(m.createdAt)}));
+  }
   $("#msgList").innerHTML = msgs.map(m=>msgHtml(m, !!c.locked)).join("") ||
-    (c.member!==false ? `<p style="color:var(--ink-faint);text-align:center;padding:26px 0;font-style:italic">Quiet here. Say something.</p>` : "");
+    `<p style="color:var(--ink-faint);text-align:center;padding:26px 0;font-style:italic">Quiet here. Say something.</p>`;
+}
+function listenMessages(channelId){
+  if(msgUnsub){ msgUnsub(); msgUnsub=null; }
+  liveMsgs=[];
+  if(!db) return;
+  msgUnsub=db.collection("messages").where("channelId","==",channelId).onSnapshot(s=>{
+    liveMsgs=s.docs.map(d=>d.data()).sort((a,b)=>((a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():0)-(b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():0)));
+    if(curChan && curChan.id===channelId){ renderMsgs(); scrollThread(); }
+  }, err=>console.warn("messages listener", err));
+}
+function showChannelPane(){
+  const desktop=isDesktop();
+  $$(".view").forEach(x=>{ if(desktop && x.id==="v-adda") return; x.classList.remove("active"); });
+  $("#v-channel").classList.add("active");
+  if(desktop){
+    $("#v-adda").classList.add("active");
+    $$("nav.tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v==="adda"));
+  }
+  window.scrollTo({top:0});
 }
 function openChannel(id){
   const c=allChannels().find(x=>x.id===id); if(!c) return;
@@ -1537,34 +1661,29 @@ function openChannel(id){
   $("#msgIn").placeholder="Message…";
   $("#chName").textContent=c.name;
   $("#chMeta").textContent=`${c.members} member${c.members===1?"":"s"} · ${c.private?"Private":"Public"}${c.locked?" · read-only":""}`;
-  const noAccess = c.private && c.member===false;
-  $("#joinWall").style.display = noAccess ? "block" : "none";
-  $("#msgList").style.display = noAccess ? "none" : "block";
-  const mayPost = !noAccess && (!c.locked || isDean());
+  $("#joinWall").style.display="none";
+  $("#msgList").style.display="block";
+  const mayPost = !c.locked || canPostLocked();
   $("#composer").style.display = mayPost ? "flex" : "none";
-  $("#lockedBar").style.display = (!mayPost && !noAccess) ? "block" : "none";
-  if(!noAccess) renderMsgs();
-  const desktop=isDesktop();
-  $$(".view").forEach(x=>{ if(desktop && x.id==="v-adda") return; x.classList.remove("active"); });
-  $("#v-channel").classList.add("active");
-  if(desktop){
-    $("#v-adda").classList.add("active");
-    $$("nav.tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v==="adda"));
-  }
-  window.scrollTo({top:0});
-  renderChannels(); // clear unread badge
+  $("#lockedBar").style.display = mayPost ? "none" : "block";
+  if(c.bot){ if(msgUnsub){msgUnsub();msgUnsub=null;} renderMsgs(); }
+  else listenMessages(id);
+  showChannelPane();
+  renderChannels();
 }
 function sendMsg(){
   const t=$("#msgIn").value.trim();
-  if(!t){ $("#msgIn").focus(); return; }
-  const m={a:me.n, role:isDean()?"Dean":null, t, w:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})};
-  (extraMsgs[curChan.id]=extraMsgs[curChan.id]||[]).push(m);
-  localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
+  if(!t || !curChan){ $("#msgIn").focus(); return; }
   $("#msgIn").value="";
-  renderMsgs();
-  renderChannels(); // keep DM previews fresh
+  if(curChan.bot){ // local path: show my question, then ask Gubbi
+    (extraMsgs[curChan.id]=extraMsgs[curChan.id]||[]).push({a:me.n, role:null, t:escapeHtml(t), w:fmtTime()});
+    renderMsgs(); scrollThread(); askBot(t); return;
+  }
+  const m={channelId:curChan.id, authorId:me.uid, authorName:me.n,
+    role:isDean()?"Dean":null, body:t, createdAt:svTime()};
+  if(curChan.dm){ m.participants=curChan.participants; db.collection("dms").add(m).catch(e=>{ console.error(e); toast("Message didn't send — try again"); }); }
+  else db.collection("messages").add(m).catch(e=>{ console.error(e); toast("Message didn't send — try again"); });
   scrollThread();
-  if(curChan.bot) askBot(t);
 }
 function scrollThread(){
   const l=$("#msgList"); l.scrollTop=l.scrollHeight;           // desktop pane
@@ -1589,8 +1708,8 @@ async function askBot(q){
     const r=await fetch(botApi()+"/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({q})});
     const d=await r.json();
     if(!r.ok) throw new Error(d.error||r.status);
-    const src=d.sources&&d.sources.length?` <span style="color:var(--ink-faint);font-size:11px">· ${d.sources[0]}</span>`:"";
-    m={a:"Gubbi", role:"Bot", t:d.answer+src, w:new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})};
+    const src=d.sources&&d.sources.length?` <span style="color:var(--ink-faint);font-size:11px">· ${escapeHtml(d.sources[0])}</span>`:"";
+    m={a:"Gubbi", role:"Bot", t:escapeHtml(d.answer)+src, w:fmtTime()};
   }catch(e){
     m={a:"Gubbi", role:"Bot", t:"I'm not reachable right now — in the pilot I live on a machine at the office. Ask again once it's back up, or contact the admin desk directly.", w:"now"};
   }
@@ -1598,33 +1717,31 @@ async function askBot(q){
   (extraMsgs[chanId]=extraMsgs[chanId]||[]).push(m);
   localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
   if(curChan && curChan.id===chanId){ renderMsgs(); scrollThread(); }
-  renderChannels();
 }
-function openDM(name){
-  const p=PEOPLE.find(x=>x.n===name) || {n:name, c:colorFor(name), s:null, note:null};
-  curChan={id:dmStoreKey(p.n), seedId:dmSeedKey(p.n), dm:true, name:p.n};
-  readChans.add(curChan.id); readChans.add(curChan.seedId);
-  localStorage.setItem(userKey("lastchan"),"dm:"+p.n);
+function refreshDMHeader(){
+  if(!curChan||!curChan.dm) return;
+  const p=people.find(x=>x.email===curChan.otherEmail);
+  $("#chMeta").textContent = p ? (STATUS[p.s]||STATUS.campus).label+(p.note?` — ${p.note}`:"") : "Direct message · private to you two";
+}
+function openDM(email, name){
+  const p=people.find(x=>x.email===email) || {n:name||email, email, c:colorFor(name||email), s:null};
+  curChan={id:dmIdFor(email), dm:true, name:p.n, otherEmail:email, participants:[me.email, email]};
+  readChans.add(curChan.id);
+  localStorage.setItem(userKey("lastchan"),"dm:"+email);
   const ce=$("#chEmoji");
   ce.className="ce dmava";
-  ce.style.background=p.c||colorFor(p.n);
-  ce.innerHTML=initials(p.n)+(p.s?`<span class="st" style="background:${STATUS[p.s].hex}"></span>`:"");
+  ce.style.background=p.c;
+  ce.innerHTML=initials(p.n)+(p.s?`<span class="st" style="background:${(STATUS[p.s]||STATUS.campus).hex}"></span>`:"");
   $("#chName").textContent=p.n;
-  $("#chMeta").textContent = p.s ? STATUS[p.s].label+(p.note?` — ${p.note}`:"") : "Direct message · private to you two";
+  refreshDMHeader();
   $("#joinWall").style.display="none";
   $("#msgList").style.display="block";
   $("#composer").style.display="flex";
   $("#lockedBar").style.display="none";
   $("#msgIn").placeholder=`Message ${p.n.split(" ")[0]}…`;
+  if(msgUnsub){ msgUnsub(); msgUnsub=null; } // DMs come from the always-on allDMs stream
   renderMsgs();
-  const desktop=isDesktop();
-  $$(".view").forEach(x=>{ if(desktop && x.id==="v-adda") return; x.classList.remove("active"); });
-  $("#v-channel").classList.add("active");
-  if(desktop){
-    $("#v-adda").classList.add("active");
-    $$("nav.tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v==="adda"));
-  }
-  window.scrollTo({top:0});
+  showChannelPane();
   renderChannels();
 }
 function openChanSheet(){
@@ -1642,25 +1759,53 @@ function createChannel(){
     desc:priv?`Private · started by ${me.n.split(" ")[0]}`:`Open to everyone · started by ${me.n.split(" ")[0]}`};
   customChannels.push(c);
   localStorage.setItem("katte-channels",JSON.stringify(customChannels));
-  extraMsgs[c.id]=[{a:me.n, role:isDean()?"Dean":null, t:"started this channel — welcome in 🌱", w:"now"}];
-  localStorage.setItem("katte-msgs",JSON.stringify(extraMsgs));
+  if(db) db.collection("messages").add({channelId:c.id, authorId:me.uid, authorName:me.n,
+    role:isDean()?"Dean":null, body:"started this channel — welcome in.", createdAt:svTime()});
   $("#chanNameIn").value="";
   $("#chanSheetWrap").classList.remove("open");
   renderChannels();
   openChannel(c.id);
-  toast(priv?`<b>${name}</b> created — private, invite from the channel page`:`<b>${name}</b> is live for everyone at Srishti`);
+  toast(priv?`<b>${name}</b> created — private`:`<b>${name}</b> is live`);
+}
+
+/* ------------ admin: invite testers ------------ */
+function inviteTester(){
+  if(!me||!me.isAdmin||!db) return;
+  const email=$("#invEmail").value.trim().toLowerCase();
+  const name=$("#invName").value.trim();
+  const role=$("#invRole").value.trim()||"Faculty";
+  if(!email||!name){ toast("Add their email and name"); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast("That doesn't look like an email"); return; }
+  db.collection("invites").doc(email).set({email, name, role, isAdmin:false}).then(()=>{
+    $("#invEmail").value=""; $("#invName").value=""; $("#invRole").value="";
+    window._lastInvite={email, name};
+    toast(`<b>${escapeHtml(name)}</b> invited — tap “Copy invite message” to send it`);
+  }).catch(e=>{ console.error(e); toast("Couldn't add them — try again"); });
+}
+function copyInvite(){
+  const url=location.origin+location.pathname;
+  const inv=window._lastInvite;
+  const who=inv?inv.name.split(" ")[0]:"there";
+  const email=inv?inv.email:"your Srishti email";
+  const pass=inv?inv.name.trim().toLowerCase().split(/\s+/)[0]:"your first name";
+  const msg=`Hi ${who}! You're invited to test Katte — our new availability app for Srishti.\n\nOpen: ${url}\nSign in with: ${email}\nPassword: ${pass} (your first name, lowercase)\n\nMark where you are each day, find colleagues, and say hi in the Adda.`;
+  navigator.clipboard.writeText(msg).then(()=>toast("Invite message copied — paste it to them"),
+    ()=>toast("Couldn't copy — long-press to select"));
 }
 
 /* ------------ wiring (no inline handlers — works under strict CSP) ------------ */
 $("#signinBtn").addEventListener("click",openPicker);
 $("#scrim").addEventListener("click",closePicker);
-$("#customGo").addEventListener("click",customEnter);
-$("#customName").addEventListener("keydown",e=>{ if(e.key==="Enter") customEnter(); });
+$("#loginBtn").addEventListener("click",doLogin);
+$("#loginPass").addEventListener("keydown",e=>{ if(e.key==="Enter") doLogin(); });
+$("#loginEmail").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#loginPass").focus(); });
 $("#signoutBtn").addEventListener("click",signOut);
+$("#invBtn").addEventListener("click",inviteTester);
+$("#copyInviteBtn").addEventListener("click",copyInvite);
 $$("#v-me .setrow[data-set] .editbtn").forEach(b=>b.addEventListener("click",()=>editSetting(b.closest(".setrow"))));
 $("#meKolam").addEventListener("click",remintKolam);
 $("#logBtn").addEventListener("click",logWork);
-$("#statusNote").addEventListener("change",()=>toast("Note shared with your school group"));
+$("#statusNote").addEventListener("change",setStatusNote);
 window.addEventListener("resize",()=>{ clearTimeout(window._skT); window._skT=setTimeout(renderSigninKolam,150); });
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(renderSigninKolam);
 $$(".scard").forEach(c=>c.addEventListener("click",()=>setStatus(c.dataset.s)));
@@ -1688,7 +1833,7 @@ document.addEventListener("click",e=>{
   const ch=e.target.closest("[data-chan]");
   if(ch){ openChannel(ch.dataset.chan); return; }
   const dm=e.target.closest("[data-dm]");
-  if(dm){ openDM(dm.dataset.dm); return; }
+  if(dm){ openDM(dm.dataset.dm, dm.dataset.dmname); return; }
   const em=e.target.closest("[data-emoji]");
   if(em){
     newChanEmoji=em.dataset.emoji;
@@ -1701,11 +1846,8 @@ const bp=new URLSearchParams(location.search).get("botapi");
 if(bp) localStorage.setItem("katte-botapi",bp); // demo link wires the bot address
 $("#today-date").textContent = new Date().toLocaleDateString("en-IN",{weekday:"long", day:"numeric", month:"long"});
 renderSigninKolam();
-const saved = localStorage.getItem("katte-user");
-if(saved){
-  enterApp(JSON.parse(saved), true);
-  toast(`Welcome back, <b>${me.n.split(" ")[0]}</b>`);
-}
+// Firebase's onAuthStateChanged restores the session (or shows sign-in) on load.
+if(!FB_OK){ $("#signin").style.display="flex"; }
 
 /* ------------ PWA: register service worker (installable + offline) ------------ */
 if("serviceWorker" in navigator){
