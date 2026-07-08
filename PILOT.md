@@ -18,7 +18,7 @@ We'd love your honest reactions over the next week or two.
    - **iPhone (Safari):** tap **Share** → **Add to Home Screen**
    - **Android (Chrome):** tap the **⋮** menu → **Add to Home Screen / Install app**
 3. Open Katte from your home screen and sign in:
-   - Your **@srishti.ac.in email**
+   - Your **@manipal.edu email**
    - Password: your **first name, lowercase** (e.g. `priya`)
    - First time, it'll ask your name — that's the whole sign-up
 - *(If the screen ever looks oddly plain, refresh once.)*
@@ -53,6 +53,6 @@ polished.
 
 ## For the organiser
 
-- **Open to anyone with an @srishti.ac.in email** — no approval step. Just share
+- **Open to anyone with an @manipal.edu email** — no approval step. Just share
   the link (Me → Copy invite message) and forward freely.
 - Reset a password / remove someone: Firebase console (Authentication + Firestore).
