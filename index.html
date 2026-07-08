@@ -716,14 +716,17 @@ footer.foot{display:none}
     <div class="sheet">
       <div class="grab"></div>
       <h4>Sign in to Katte</h4>
-      <p class="sub">Use your Srishti email. Your password is your <b>first name</b> (lowercase), as shared with you.</p>
-      <label class="flabel">Email</label>
+      <p class="sub">Use your <b>@srishti.ac.in</b> email. Password is your <b>first name</b> (lowercase). New here? Just add your name — that's the whole sign-up.</p>
+      <label class="flabel">Srishti email</label>
       <input class="finput" id="loginEmail" type="email" inputmode="email" autocomplete="username" placeholder="you@srishti.ac.in">
       <label class="flabel">Password</label>
       <input class="finput" id="loginPass" type="password" autocomplete="current-password" placeholder="your first name">
+      <label class="flabel">Your name <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-faint)">— first time only</span></label>
+      <input class="finput" id="loginName" autocomplete="name" placeholder="e.g. Priya Nair">
+      <label class="flabel">School / discipline <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-faint)">— optional</span></label>
+      <input class="finput" id="loginRole" placeholder="e.g. Visual Communication">
       <button class="createbtn" id="loginBtn">Enter</button>
       <p class="fine" id="loginErr" style="min-height:14px;color:var(--terracotta)"></p>
-      <p class="fine">Not on the test list yet? Ask the organiser to add your email.</p>
     </div>
   </div>
 
@@ -896,17 +899,10 @@ footer.foot{display:none}
         <div class="setrow" data-set="backup"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><circle cx="9" cy="9" r="4"/><circle cx="15" cy="15" r="4"/></svg></span><div>My backup<small>Who to ask when you're away</small></div><span class="val"></span><button class="editbtn" aria-label="Edit backup"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
         <div class="setrow" data-set="checkin"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M12 21s6.5-6.1 6.5-11A6.5 6.5 0 1 0 5.5 10c0 4.9 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span><div>Campus check-in<small>Opt-in, on-campus only, never tracks location off it</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle campus check-in"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
         <div class="setrow" data-set="quiet"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.6 2.5H4.4z"/><path d="M9.7 20.5a2.4 2.4 0 0 0 4.6 0"/></svg></span><div>Quiet hours<small>No pings during studio practice</small></div><span class="val"></span><button class="editbtn" aria-label="Toggle quiet hours"><svg class="fi" viewBox="0 0 24 24"><path d="M4.5 19.5l.9-3.6L16.7 4.6a2 2 0 0 1 2.8 2.8L8.2 18.7l-3.7.8z"/><path d="M14.8 6.5l2.8 2.8"/></svg></button></div>
-        <div id="adminBox" style="display:none">
-          <h2 class="sec">Invite a tester</h2>
-          <p style="font-size:12.5px;color:var(--ink-soft);margin:-6px 0 12px">Add someone to the pilot. Tell them: log in with this email, password is their first name (lowercase).</p>
-          <label class="flabel">Their Srishti email</label>
-          <input class="finput" id="invEmail" type="email" placeholder="firstname.lastname@srishti.ac.in" autocomplete="off">
-          <label class="flabel">Their name</label>
-          <input class="finput" id="invName" placeholder="e.g. Priya Nair" autocomplete="off">
-          <label class="flabel">Their school / role</label>
-          <input class="finput" id="invRole" placeholder="e.g. Visual Communication" autocomplete="off">
-          <button class="createbtn" id="invBtn">Add to the test group</button>
-          <button class="setrow" id="copyInviteBtn" style="margin-top:10px"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></span><div>Copy invite message<small>Ready to paste into WhatsApp or email</small></div><span class="val">Copy</span></button>
+        <div id="shareBox">
+          <h2 class="sec">Invite colleagues</h2>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin:-6px 0 12px">Anyone with an <b>@srishti.ac.in</b> email can join — no approval needed. Share the link and they're in.</p>
+          <button class="setrow" id="copyInviteBtn"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></span><div>Copy invite message<small>Ready to paste into WhatsApp or email</small></div><span class="val">Copy</span></button>
         </div>
         <button class="setrow" id="signoutBtn"><span class="ic"><svg class="fi" viewBox="0 0 24 24"><path d="M9 4H5.5a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 5.5 20H9M14 16l4-4-4-4M18 12H9"/></svg></span><div>Sign out<small>Leave the test account</small></div><span class="val">→</span></button>
       </section>
@@ -1099,6 +1095,8 @@ function openPicker(){ $("#loginErr").textContent=""; $("#sheetWrap").classList.
 function closePicker(){ $("#sheetWrap").classList.remove("open"); }
 // Firebase needs >=6 char passwords; pad the first name invisibly & consistently.
 const authPassword = typed => typed.trim().toLowerCase() + "@katte";
+const isSrishti = e => /@srishti\.ac\.in$/.test(e);
+let pendingSignup=null; // {name, role} captured for a first-time account
 async function doLogin(){
   if(!FB_OK){ $("#loginErr").textContent="No connection — try again on network."; return; }
   const email=$("#loginEmail").value.trim().toLowerCase();
@@ -1110,8 +1108,12 @@ async function doLogin(){
   try{
     try{ await auth.signInWithEmailAndPassword(email,pass); }
     catch(e){
-      // first time here? create the account (rules still require an invite)
+      // no account yet → first-time sign-up (open to any @srishti.ac.in address)
       if(e.code==="auth/user-not-found" || e.code==="auth/invalid-credential"){
+        if(!isSrishti(email)) throw {code:"not-srishti"};
+        const name=$("#loginName").value.trim();
+        if(!name) throw {code:"need-name"};
+        pendingSignup={name, role:$("#loginRole").value.trim()||"Faculty"};
         try{ await auth.createUserWithEmailAndPassword(email,pass); }
         catch(e2){
           if(e2.code==="auth/email-already-in-use") throw {code:"wrong-pass"};
@@ -1123,9 +1125,12 @@ async function doLogin(){
   }catch(e){
     btn.disabled=false;
     $("#loginErr").textContent =
-      e.code==="wrong-pass" ? "Wrong password. It's your first name, lowercase." :
+      e.code==="not-srishti" ? "Sign-in is for @srishti.ac.in accounts." :
+      e.code==="need-name" ? "New here? Add your name above to create your account." :
+      e.code==="wrong-pass" ? "That email already has an account — check your password (your first name)." :
       e.code==="auth/invalid-email" ? "That doesn't look like an email." :
-      "Couldn't sign in. Check with the organiser that you're on the list.";
+      "Couldn't sign in — please try again.";
+    if(e.code==="need-name") $("#loginName").focus();
   }
 }
 // central session handler
@@ -1135,15 +1140,19 @@ if(FB_OK) auth.onAuthStateChanged(async user=>{
     const ref=db.collection("profiles").doc(user.uid);
     let snap=await ref.get();
     if(!snap.exists){
-      const inv=await db.collection("invites").doc(user.email).get();
-      if(!inv.exists){
-        $("#loginErr").textContent="You're not on the test list yet. Ask the organiser to add your email.";
+      // first login → create the profile (name/role captured at sign-up)
+      const info=pendingSignup||{};
+      const name=info.name || user.email.split("@")[0];
+      const role=info.role || "Faculty";
+      pendingSignup=null;
+      try{
+        await ref.set({email:user.email, name, role, isAdmin:false,
+          status:"campus", statusNote:"", statusUpdatedAt:svTime()});
+        snap=await ref.get();
+      }catch(rulesErr){
+        $("#loginErr").textContent="Sign-in is for @srishti.ac.in accounts.";
         await auth.signOut(); $("#loginBtn").disabled=false; return;
       }
-      const d=inv.data();
-      await ref.set({email:user.email, name:d.name, role:d.role||"Faculty", isAdmin:!!d.isAdmin,
-        status:"campus", statusNote:"", statusUpdatedAt:svTime()});
-      snap=await ref.get();
     }
     const p=snap.data();
     me={uid:user.uid, email:user.email, n:p.name, role:p.role||"Faculty", isAdmin:!!p.isAdmin};
@@ -1161,7 +1170,6 @@ function enterApp(profile){
   top.textContent=initials(me.n); top.style.background=colorFor(me.n);
   $("#meName").textContent=me.n;
   $("#meEmail").textContent=(me.role||"Faculty")+" · "+me.email;
-  $("#adminBox").style.display = me.isAdmin ? "block" : "none";
   $$(".scard").forEach(c=>c.classList.toggle("sel",c.dataset.s===myStatus));
   $("#statusNote").value = profile.statusNote||"";
   renderCats(); renderPie(); renderMeKolam(); loadSettings();
@@ -1770,27 +1778,10 @@ function createChannel(){
 }
 
 /* ------------ admin: invite testers ------------ */
-function inviteTester(){
-  if(!me||!me.isAdmin||!db) return;
-  const email=$("#invEmail").value.trim().toLowerCase();
-  const name=$("#invName").value.trim();
-  const role=$("#invRole").value.trim()||"Faculty";
-  if(!email||!name){ toast("Add their email and name"); return; }
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast("That doesn't look like an email"); return; }
-  db.collection("invites").doc(email).set({email, name, role, isAdmin:false}).then(()=>{
-    $("#invEmail").value=""; $("#invName").value=""; $("#invRole").value="";
-    window._lastInvite={email, name};
-    toast(`<b>${escapeHtml(name)}</b> invited — tap “Copy invite message” to send it`);
-  }).catch(e=>{ console.error(e); toast("Couldn't add them — try again"); });
-}
 function copyInvite(){
   const url=location.origin+location.pathname;
-  const inv=window._lastInvite;
-  const who=inv?inv.name.split(" ")[0]:"there";
-  const email=inv?inv.email:"your Srishti email";
-  const pass=inv?inv.name.trim().toLowerCase().split(/\s+/)[0]:"your first name";
-  const msg=`Hi ${who}! You're invited to test Katte — our new availability app for Srishti.\n\nOpen: ${url}\nSign in with: ${email}\nPassword: ${pass} (your first name, lowercase)\n\nMark where you are each day, find colleagues, and say hi in the Adda.`;
-  navigator.clipboard.writeText(msg).then(()=>toast("Invite message copied — paste it to them"),
+  const msg=`You're invited to try Katte — our new availability app for Srishti 🌱\n\nOpen: ${url}\nSign in with your @srishti.ac.in email. Your password is your first name (lowercase). First time? Just add your name.\n\nMark where you are each day, find colleagues, and say hi in the Adda.`;
+  navigator.clipboard.writeText(msg).then(()=>toast("Invite message copied — paste it anywhere"),
     ()=>toast("Couldn't copy — long-press to select"));
 }
 
@@ -1801,7 +1792,6 @@ $("#loginBtn").addEventListener("click",doLogin);
 $("#loginPass").addEventListener("keydown",e=>{ if(e.key==="Enter") doLogin(); });
 $("#loginEmail").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#loginPass").focus(); });
 $("#signoutBtn").addEventListener("click",signOut);
-$("#invBtn").addEventListener("click",inviteTester);
 $("#copyInviteBtn").addEventListener("click",copyInvite);
 $$("#v-me .setrow[data-set] .editbtn").forEach(b=>b.addEventListener("click",()=>editSetting(b.closest(".setrow"))));
 $("#meKolam").addEventListener("click",remintKolam);
