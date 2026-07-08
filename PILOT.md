@@ -11,13 +11,17 @@ Katte is a small experiment: instead of a sign-in register, you just mark
 *where you are* each day so colleagues can find you — presence without policing.
 We'd love your honest reactions over the next week or two.
 
-**Getting in**
-- Open: `[the link]`
-- Sign in with your **Srishti email**
-- Your password is your **first name, lowercase** (e.g. `priya`)
-- *(If the screen looks oddly plain, refresh once — it's a web app and updates
-  on the second load.)*
-- On your phone, tap **Add to Home Screen** so it opens like an app.
+**Set it up — on your phone (this is a phone-first app)**
+1. Open on your phone's browser: `[the link]`
+2. **Add it to your home screen** so it behaves like a real app — this is what
+   makes it easy to mark yourself each day:
+   - **iPhone (Safari):** tap **Share** → **Add to Home Screen**
+   - **Android (Chrome):** tap the **⋮** menu → **Add to Home Screen / Install app**
+3. Open Katte from your home screen and sign in:
+   - Your **@srishti.ac.in email**
+   - Password: your **first name, lowercase** (e.g. `priya`)
+   - First time, it'll ask your name — that's the whole sign-up
+- *(If the screen ever looks oddly plain, refresh once.)*
 
 **The one thing that matters most**
 Each morning, open **Today** and mark where you are — On campus / Reachable /
@@ -49,8 +53,6 @@ polished.
 
 ## For the organiser
 
-- **Everyone must be invited first.** A person can only sign in if their email is
-  on the allowlist. Add each tester in **Me → Invite a tester** before they try.
-  If you forward this to more people, they each need to be invited too — or ask
-  to switch to "any @srishti.ac.in email can join" so forwarding just works.
+- **Open to anyone with an @srishti.ac.in email** — no approval step. Just share
+  the link (Me → Copy invite message) and forward freely.
 - Reset a password / remove someone: Firebase console (Authentication + Firestore).
