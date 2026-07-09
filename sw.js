@@ -1,6 +1,6 @@
 /* Katte service worker — offline-first app shell.
    Bump CACHE when any precached file changes to roll the cache over. */
-const CACHE = "katte-v4";
+const CACHE = "katte-v5";
 const SHELL = [
   "./",
   "./index.html",
